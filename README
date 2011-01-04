@@ -4,5 +4,5 @@ You will need Node.js (http://nodejs.org) and CoffeeScript (http://jashkenas.git
 
 To build and run:
 
-  cake build & ./run
+  cake build && ./run
 
