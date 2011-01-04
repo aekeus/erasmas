@@ -1,13 +1,22 @@
 class Thing
   constructor: (@name, @attributes, existingGid) ->
+    # key / value pairs of attributes
     @attributes ||= {}
+
+    # global Thing id
     @gid = existingGid || gid += 1
     registry.register this
 
+    # object (k/v) of children {Thing}
     @children = {}
+
+    # parent container {Thing}
     @parent = null
+
+    # other Things listening to me
     @listeners = {}
 
+    # use the class name for the object name if non given
     @name = "#{this.constructor.name}" unless @name
 
   # subclass children to provide custom description formats
@@ -55,6 +64,8 @@ class Thing
 
   # generic child search
   search: (selector, args) =>
+    assert selector?, "selector required"
+
     args ||= {}
     searchThing this, selector, args
 
@@ -89,16 +100,13 @@ class Thing
     "#{this.name}[#{this.constructor.name}]#{this.gid}"
 
   listenTo: (thing) ->
-#    debug "#{this} starts listening to #{thing}"
     @listeners[thing.gid] = thing
 
   ignore: (thing) ->
-#    debug "#{this} stops listening to #{thing}"
     delete @listeners[thing.gid]
 
   broadcast: (evt) ->
     for gid, thing of @listeners
-#      debug "#{this} routes an event of type #{evt.type} to #{thing}"
       thing.hear evt
 
   # subclass to implement behaviour
