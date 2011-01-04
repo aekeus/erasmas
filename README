@@ -1,6 +1,6 @@
 Erasmas is a text based shared multi user environment. (MUD, MUSH etc...)
 
-You will need [Node.js](http://nodejs.org) and [CoffeeScript](http://jashkenas.github.com/coffee-script)
+You will need Node.js (http://nodejs.org) and CoffeeScript (http://jashkenas.github.com/coffee-script)
 
 To build and run:
 
