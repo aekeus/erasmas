@@ -7,6 +7,7 @@ testWorld = () ->
 
   r1 = new Room("Room 1")
   r2 = new Room("Room 2")
+  entrance = new Room("Entrance")
 
   c1 = new Character("Character 1")
   c2 = new Character("Character 2")
@@ -22,6 +23,7 @@ testWorld = () ->
 
   z.add r1
   z.add r2
+  z.add entrance
 
   w.add z
 
@@ -290,19 +292,19 @@ testSet "Kernel logic methods", () ->
   equals things.length, 1, "two things found by name"
 
   things = searchThing world, [["name", "isnt", "Room 2"]]
-  equals things.length, 7, "many things found by negation of name"
+  equals things.length, 8, "many things found by negation of name"
 
   things = searchThing world, [["type", "is", "Room"]]
-  equals things.length, 2, "two rooms found by type"
+  equals things.length, 3, "two rooms found by type"
 
   things = searchThing world, [["type", "isa", "Room"]]
-  equals things.length, 2, "two rooms found by type ISA"
+  equals things.length, 3, "two rooms found by type ISA"
 
   things = searchThing world, [["gid", "is", rooms[0].gid]]
   equals things.length, 1, "gid is"
 
   things = searchThing world, [["gid", "isnt", rooms[0].gid]]
-  equals things.length, 7, "gid isnt"
+  equals things.length, 8, "gid isnt"
 
   things = searchThing world, [["gid", "is", rooms[0].gid]], one: true
   ok things.isa("Room"), "gid is with return one"
@@ -329,6 +331,24 @@ testSet "Kernel logic methods", () ->
   equals things.length, 1, "name is string with type designator"
 
   things = world.search "[Room]"
-  equals things.length, 2, "find all rooms"
+  equals things.length, 3, "find all rooms"
+
+testSet "Character creation", () ->
+  [world, rooms, characters, zones, doors] = testWorld()
+  k = new Kernel
+  k.installWorld world
+
+  conn = new Connection null
+
+  response = k.logic_create_character conn, "foo", "bar"
+
+  entrance = world.getEntrance()
+  char = entrance.search "[Character]", one: true
+  ok char?, "new character found"
+
+  equals char.name, "foo", "character name"
+  equals char.attr("password"), "bar", "character password"
+
+  equals char.parent, entrance, "character parent is entrance"
 
 testStats()

@@ -18,6 +18,7 @@ class Kernel
   setupDispatcher: (dispatcher) ->
     dispatcher.install @logic_save,          "save world to named file",                           "save",     "ALPHANUM"
     dispatcher.install @logic_save,          "save world to default filename",                     "save"
+    dispatcher.install @logic_create_character, "create a new character",                          "create", "character", "ALPHANUM", "with", "password", "ALPHANUM"
     dispatcher.install @logic_set,           "set an attribute of a thing to a value",             "set",      "ALPHANUM", "of", "ID", "to", "ALPHANUM"
     dispatcher.install @logic_append,        "append a value to a list attribute of a thing",      "append",   "ALPHANUM", "to", "ALPHANUM", "of", "ID"
     for verb in ["inv", "inventory"]
@@ -279,6 +280,21 @@ class Kernel
       "Cannot login to this character"
 
   #
+  #  Create a new character
+  #
+  #  name - new character name      {String}
+  #  pwd  - new character password  {String}
+  #
+  logic_create_character: (conn, name, pwd) =>
+    assert name?, "name required"
+    assert pwd?, "password required"
+
+    char = new Character name, password: pwd
+    @world.getEntrance().add char
+    conn.connect char
+    char.look()
+
+  #
   #  Go through a door
   #
   #  selector - target door selector {Selector -> Door}
@@ -286,7 +302,6 @@ class Kernel
   logic_go: (conn, selector) =>
     assert conn.constructor.name is "Connection", "connection required"
     assert selector?, "selector required"
-
     door = conn.character.parent.search(selector + "[Door]", one: true) || @softMatchIn(selector, conn.character.parent.childrenOfType "Door")
     return false unless door?
 

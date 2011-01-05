@@ -4,8 +4,7 @@ class World extends Thing
     super
 
   roomByName: (name) ->
-    rooms = this.childrenByName name
-    return rooms[0] if rooms.length
+    this.search name, one: true
 
   getEntrance: ->
     this.roomByName "Entrance"
