@@ -6,3 +6,6 @@ To build and run:
 
   cake build && ./run
 
+Login with a telnet client to localhost:8000, view with http client at localhost:8080/tree
+
+
