@@ -68,16 +68,17 @@ searchThing = (thing, selectors, args) ->
         func = comp[attr][relationship]
       else
         func = comp["attr"][relationship]
-      result = func(thing, attr, value)
+      result = func thing, attr, value
       return false unless result
     true
 
   results = []
   search = (thing, selectors) ->
-    if check(thing, selectors)
+    if check thing, selectors
       results.push thing
     for gid, child of thing.children
       search child, selectors
+
   search thing, selectors
 
   return results[0] if results? and args.one

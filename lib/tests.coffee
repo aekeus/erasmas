@@ -208,15 +208,9 @@ testSet "Event Routing and Registration", () ->
   r1 = new Room "Room1"
   c1 = new Character "Character1"
 
-  for k, v of r1.listeners
-    debug v
-
   r1.add c1
   z.add r1
   w.add z
-
-  for k, v of r1.listeners
-    debug v
 
 testSet "Kernel logic methods", () ->
   [world, rooms, characters, zones, doors] = testWorld()
@@ -375,4 +369,33 @@ testSet "Integer, Float, String, Array and Boolean attribute sets", () ->
   t.attr("foo", "false")
   ok not t.attr("foo"), "false attr"
 
+testSet "Tickets", () ->
+  [world, rooms, characters, zones, doors] = testWorld()
+
+  td = new TicketDoor "London",
+    destination: rooms[0].gid
+
+  ta = new TicketAgent
+  ta.attr("door", td.gid)
+  ta.attr("cost", 10)
+
+  eq td.canTraverse(characters[0]), false, "cannot traverse without a ticket"
+
+  response = ta.buyTicket(characters[0])
+  ok response.match(/enough money/g), "not enough money"
+
+  characters[0].attr("money", 50)
+  response = ta.buyTicket(characters[0])
+  ok response.match(/purchased/g), "purchased"
+
+  equals characters[0].attr("money"), 40, 'decrement of character money'
+
+  tickets = characters[0].search "[Ticket]"
+  equals tickets.length, 1, "ticket given"
+
+  equals tickets[0].attr("door"), td.gid, "ticket destination"
+
+  eq td.canTraverse(characters[0]), true, "can traverse with a ticket"
+
+runTests()
 testStats()

@@ -16,14 +16,19 @@ class WebInterface
         buffer += ("  " for x in [0..level]).join("") + recurseThing(child, level + 1)
       buffer
 
+    styleLink = () -> "<link href=\"/style.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />"
+    header = (title) -> "<html><head>#{styleLink()}<title>Commands</title></head><body>"
+
+    web.get "/style.5Bcss", nr.staticHandler "static/style.css"
+
     web.get "/commands", (req, res) ->
-      buffer  = "<html><head><title>Commands</title></head><body><h1>Commands</h1><pre>"
+      buffer  = "#{header('Commands')}<h1>Commands</h1><pre>"
       buffer += kernel.dispatcher.formattedCommands().join(utils.eol)
       buffer += "</pre></body></html>"
       buffer
 
     web.get "/tree", (req, res) ->
-      buffer = "<html><head><title>Object Tree</title></head><body><h1>World Tree</h1><pre>"
+      buffer = "#{header('Object Tree')}<h1>World Tree</h1><pre>"
       buffer += recurseThing wi.world
       buffer += "</pre></body></html>"
       buffer
@@ -45,7 +50,7 @@ class WebInterface
         thing.rep()
 
     web.get new RegExp("^/Thing/(.*)$"), (req, res, gid) ->
-      buffer = "<html><head><title>Thing</title></head><body>"
+      buffer = header "Thing"
       thing = registry.get(parseInt(gid))
       if thing?
         buffer += "<a href=\"/tree\">tree</a> | Parent: <a href='/Thing/#{thing.parent?.gid}'>#{thing?.parent}</a><br/>"
@@ -53,11 +58,11 @@ class WebInterface
 
         attrNames = thing.attrNames()
         if attrNames.length > 0
-          buffer += "<h2>Attributes</h2><table><tr><th>Key</th><th>Value</th></tr>"
+          buffer += "<h2>Attributes</h2><table class=\"attributes\"><tr><th>Key</th><th>Value</th></tr>"
           for k, v of thing.attributes
             destObj = registry.get(parseInt(v))
             if destObj?
-              buffer += "<tr><td>#{k}</td><td>#{v} - #{thingLink destObj}</td></tr>"
+              buffer += "<tr><td>#{k}</td><td>#{v} - #{thingLink destObj}</td><td>{Global Reference}</td></tr>"
             else
               buffer += "<tr><td>#{k}</td><td>#{v}</td><td>{#{utils.typeLabel v}}</td></tr>"
           buffer += "</table>"

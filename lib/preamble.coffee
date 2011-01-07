@@ -1,9 +1,10 @@
 tcp  = require("net")
 puts = require("sys").puts
 fs   = require("fs")
-web  = require('./lib/node-router').getServer();
+web  = require('./lib/node-router').getServer()
+nr   = require './lib/node-router'
 
-QUIET = false
+QUIET = 1
 debug = (text) ->
   puts "DEBUG: #{text}" if not QUIET
 

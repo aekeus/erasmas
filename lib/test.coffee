@@ -1,12 +1,21 @@
 passed = 0
 failed = 0
 
+testSets = {}
 testSet = (name, func) ->
-  puts "Test Set: '#{name}'"
-  func()
+  testSets[name] = func
 
 testStats = () ->
   puts "Passed = #{passed}, Failed = #{failed}"
+
+runTests = (test) ->
+  unless test?
+    for name, func of testSets
+      puts "Test Set: '#{name}'"
+      func()
+  else
+    puts "Test Set: '#{test}'"
+    testSets[test]()
 
 equals = (v1, v2, text = 'unknown') ->
   if v1 != v2
@@ -14,7 +23,9 @@ equals = (v1, v2, text = 'unknown') ->
     failed += 1
   else
     passed += 1
-#    puts "  OK: #{text}"
+    puts "  OK: #{text}"
+
+eq = equals
 
 ok = (bool, text = 'unknown') ->
   if !bool
@@ -22,4 +33,4 @@ ok = (bool, text = 'unknown') ->
     failed += 1
   else
     passed += 1
-#    puts "  OK: #{text}"
+    puts "  OK: #{text}"

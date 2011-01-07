@@ -1,0 +1,12 @@
+
+body {
+  font-family: arial;
+  padding: 10px;
+  color: #333;
+  background-color: #fefefe;
+}
+
+table.attributes th {
+  background-color: #ccc;
+}
+
