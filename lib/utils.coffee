@@ -62,6 +62,16 @@ utils =
       buffer += char
     buffer
 
+  typeLabel: (v) ->
+    if utils.isArray v
+      "List"
+    else if utils.isString v
+      "String"
+    else if utils.isNumber v
+      "Number"
+    else
+      "Unknown"
+
   looksLikeInteger: (s) -> s.match(/^[0-9]+$/g)
   looksLikeFloat: (s) -> s.match(/^[0-9\.]+$/g)
   looksLikeNumber: (s) -> looksLikeFloat(s) or looksLikeInteger(s)
@@ -82,4 +92,6 @@ utils =
             parseFloat(v)
           else
             utils.trimQuotes v
+        else
+          v
 

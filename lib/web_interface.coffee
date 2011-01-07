@@ -59,7 +59,7 @@ class WebInterface
             if destObj?
               buffer += "<tr><td>#{k}</td><td>#{v} - #{thingLink destObj}</td></tr>"
             else
-              buffer += "<tr><td>#{k}</td><td>#{v}</td></tr>"
+              buffer += "<tr><td>#{k}</td><td>#{v}</td><td>{#{utils.typeLabel v}}</td></tr>"
           buffer += "</table>"
 
         if thing.numberOfChildren() > 0
