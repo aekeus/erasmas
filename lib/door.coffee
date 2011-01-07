@@ -2,14 +2,11 @@ class Door extends Thing
   constructor: ->
     super
 
-  destination: ->
-    @attributes.destination
+  destination: -> @attr("destination")
 
-  canTraverse: (character) ->
-    true
+  canTraverse: (character) -> true
 
-  isContainer: ->
-    false
+  isContainer: -> false
 
 CORE.Door = Door
 

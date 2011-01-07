@@ -61,3 +61,25 @@ utils =
     for i in [0..times]
       buffer += char
     buffer
+
+  looksLikeInteger: (s) -> s.match(/^[0-9]+$/g)
+  looksLikeFloat: (s) -> s.match(/^[0-9\.]+$/g)
+  looksLikeNumber: (s) -> looksLikeFloat(s) or looksLikeInteger(s)
+
+  parseValue: (v) ->
+    switch v
+      when "false"
+        false
+      when "true"
+        true
+      when "list"
+        []
+      else
+        if utils.isString v
+          if utils.looksLikeInteger v
+            parseInt(v)
+          else if utils.looksLikeFloat v
+            parseFloat(v)
+          else
+            utils.trimQuotes v
+

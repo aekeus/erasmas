@@ -41,7 +41,7 @@ testSet "Thing", () ->
   equals t.attr("age"), 38, "age attr"
   equals t.attr("foo"), undefined, "undefined attr"
 
-  t.attr "bar", 99
+  t.attr "bar", "99"
   equals t.attr("bar"), 99, "attr set"
 
   ok t.gid?, 'gid defined'
@@ -350,5 +350,29 @@ testSet "Character creation", () ->
   equals char.attr("password"), "bar", "character password"
 
   equals char.parent, entrance, "character parent is entrance"
+
+testSet "Integer, Float, String, Array and Boolean attribute sets", () ->
+
+  t = new Thing
+  t.attr("foo", "123")
+  equals t.attr("foo"), 123, "Integer set"
+
+  t.attr("foo", "123.45")
+  equals t.attr("foo"), 123.45, "Float set"
+
+  t.attr("foo", "a123.45")
+  equals t.attr("foo"), "a123.45", "string set"
+
+  t.attr("foo", "\"123\"")
+  equals t.attr("foo"), "123", "string set with quotes"
+
+  t.attr("foo", "list")
+  ok utils.isArray t.attr("foo"), "list attr"
+
+  t.attr("foo", "true")
+  ok t.attr("foo"), "true attr"
+
+  t.attr("foo", "false")
+  ok not t.attr("foo"), "false attr"
 
 testStats()

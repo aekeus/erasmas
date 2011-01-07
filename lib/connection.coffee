@@ -6,7 +6,7 @@ class Connection
     buffer = ""
 
     socket.addListener "data", (packet) ->
-      try
+#      try
         buffer += packet
         i = buffer.indexOf("\r\n")
         while i isnt -1
@@ -20,8 +20,8 @@ class Connection
             kernel.handleInput conn, tokens, "#{message}"
           buffer = buffer.slice i + 2
           i = buffer.indexOf("\r\n")
-      catch error
-        puts "Uncaught exception! " + error
+#      catch error
+#        puts "Uncaught exception! " + error
 
     socket.addListener "eof", (packet) ->
       try

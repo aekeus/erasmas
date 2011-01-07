@@ -75,6 +75,7 @@ class Thing
 
   # set and / or return attribute
   attr: (k, v = undefined) ->
+    v = utils.parseValue v
     @attributes[k] = v if v?
     @attributes[k]
 

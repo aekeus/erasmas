@@ -78,7 +78,7 @@ class Paper extends Thing
     @attributes.contents.push text
 
   read: (character) ->
-    @broadcast new Event "talk", this, words: @attributes.contents.join("\r\n")
+    @attributes.contents.join("\r\n")
 
   interface:
     "write-on": 1

@@ -20,6 +20,7 @@ srcfiles = [
   'lib/containers.coffee',
   'lib/room.coffee',
   'lib/character.coffee',
+  'lib/transports.coffee',
   'lib/bots.coffee',
   'lib/door.coffee',
   'lib/connection.coffee',

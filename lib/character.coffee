@@ -48,17 +48,19 @@ class Character extends Thing
     otherCharacters = this.siblingsOfType("Character")
     msg =
       if otherCharacters.length is 0
-        "You are alone in room #{room.mqname()}"
+        "You are alone in #{room.mqname()}"
       else if otherCharacters.length is 1
-        "You are in room #{room.mqname()} with one other person (#{otherCharacters[0].mqname()})"
+        "You are in #{room.mqname()} with one other person (#{otherCharacters[0].mqname()})"
       else
-        characterNames = utils.textForThings(otherCharacters)
-        "You are in room #{room.mqname()} with #{otherCharacters.length} other people (#{characterNames})"
+        characterNames = utils.textForThings(otherCharacters, "and")
+        "You are in #{room.mqname()} with #{otherCharacters.length} other people (#{characterNames})"
 
     msg += utils.eol
+    msg += room.attr("description") + utils.eol if room.attr("description")?
+
     doors = room.doors()
     if doors.length > 0
-      msg += "You can go " + utils.textForThings(doors, "and")
+      msg += "You can go " + utils.textForThings(doors, "or")
     else
       msg += "There are no exits from this room!"
 

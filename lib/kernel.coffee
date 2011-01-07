@@ -49,7 +49,7 @@ class Kernel
     dispatcher.install @logic_say,           "speak to everyone in a room",                        "say",      "ALPHANUM"
     dispatcher.install @logic_commands,      "show a list of commands",                            "commands"
     dispatcher.install @logic_help,          "show help contents",                                 "help"
-    dispatcher.install @logic_go,            "go through a door",                                  "ALPHANUM"
+#    dispatcher.install @logic_go,            "go through a door",                                  "ALPHANUM"
 
   #
   #  Start the server listening for connections
@@ -120,7 +120,7 @@ class Kernel
   logic_commands: (conn) =>
     assert conn.constructor.name is "Connection", "connection required"
 
-    @dispatcher.formattedCommands().join(utils.eol)
+    @dispatcher.formattedCommands().join utils.eol
 
   #
   #  Display contents of help
@@ -130,7 +130,7 @@ class Kernel
   logic_help: (conn) =>
     assert conn.constructor.name is "Connection", "connection required"
 
-    @dispatcher.formattedCommands().join(utils.eol)
+    @dispatcher.formattedCommands().join utils.eol
 
   #
   #  Place a Thing from your inventory into the inventory of another container
@@ -177,7 +177,7 @@ class Kernel
   # selector - matching selector {Selector}
   #
   logic_find: (conn, selector) =>
-    assert selector, "selector required"
+    assert selector, "logic_find - selector required"
 
     things = @world.search selector
     return utils.notFoundMsg selector unless things?
@@ -301,12 +301,14 @@ class Kernel
   #
   logic_go: (conn, selector) =>
     assert conn.constructor.name is "Connection", "connection required"
-    assert selector?, "selector required"
+    assert selector?, "logic_go - selector required"
+
     door = conn.character.parent.search(selector + "[Door]", one: true) || @softMatchIn(selector, conn.character.parent.childrenOfType "Door")
     return false unless door?
 
-    destinationRoom = @world.search door.attr("destination"), one: true
+    destinationRoom = @world.search door.destination(), one: true
     return "destination room not found." unless destinationRoom?
+    return "you cannot go #{destinationRoom.mqname()}." unless door.canTraverse(conn.character)
 
     response = @logic_move conn, conn.character.gid, destinationRoom.gid
     response = @logic_look conn unless response
@@ -378,19 +380,9 @@ class Kernel
     target = @world.search selector, one: true
     return utils.notFoundMsg selector unless target?
 
-    value = switch value
-      when "false"
-        false
-      when "true"
-        true
-      when "list"
-        []
-      else
-        value
-
-    return "\"#{attribute}\" of #{target} cannot be set to \"#{value}\"" unless target.canSetAttr attribute, value
+    return "#{attribute} of #{target} cannot be set to #{value}" unless target.canSetAttr attribute, value
     v = target.attr attribute, value
-    "\"#{attribute}\" of #{target} set to \"#{v}\""
+    "#{attribute} of #{target} set to #{v}"
 
   #
   #  Link two rooms together. Create two doors that share their name with their destination room.
@@ -426,8 +418,8 @@ class Kernel
   #
   logic_move: (conn, selector, parentSelector) =>
     assert conn.constructor.name is "Connection", "connection required"
-    assert selector?, "selector required"
-    assert parentSelector?, "parent selector required"
+    assert selector?, "logic_move - selector required"
+    assert parentSelector?, "logic_move - parent selector required"
 
     thing = @world.search selector, one: true
     return utils.notFoundMsg selector unless thing?
@@ -450,7 +442,7 @@ class Kernel
   #
   logic_take: (conn, selector) =>
     assert conn.constructor.name is "Connection", "connection required"
-    assert selector?, "selector required"
+    assert selector?, "logic_take - selector required"
 
     thing = conn.character.parent.search selector, one: true
     return "#{selector} could not be found"                           unless thing?
@@ -468,7 +460,7 @@ class Kernel
   #
   logic_drop: (conn, selector) =>
     assert conn.constructor.name is "Connection", "connection required"
-    assert selector?, "selector required"
+    assert selector?, "logic_drop - selector required"
 
     thing = conn.character.search selector, one: true
     return "#{selector} could not be found" unless thing?
@@ -529,16 +521,15 @@ class Kernel
     verb     = tokens[0].toLowerCase()
     selector = tokens[1]
 
-    assert verb?, "verb required"
-    assert selector?, "selector required"
+    return "command not recognized" unless selector?
 
     thing = conn.character.parent.search selector, one: true
     return utils.notFoundMsg selector unless thing?
 
     method = thing[verb]
     params = tokens[2..]
-    return "#{thing} cannot #{verb}" unless method?
 
+    return "#{thing} cannot #{verb}" unless method?
     method.call thing, conn.character, params
 
   #
