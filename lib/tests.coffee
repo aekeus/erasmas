@@ -397,5 +397,23 @@ testSet "Tickets", () ->
 
   eq td.canTraverse(characters[0]), true, "can traverse with a ticket"
 
+testSet "Dispatcher", () ->
+  [world, rooms, characters, zones, doors] = testWorld()
+  k = new Kernel
+  k.installWorld world
+
+  conn = new Connection null
+  conn.connect characters[0]
+
+  [func, matches] = k.dispatcher.method conn, "go North"
+  eq func, k.logic_go, "go PLACE"
+  eq matches[0], "North", "go PLACE matches"
+
+  [func, matches] = k.dispatcher.method conn, "create TicketAgent \"A Foo Thing\""
+  eq func, k.logic_create_custom, "create custom thing - func"
+
+  eq matches[0], "TicketAgent", "Matches for custom create - class"
+  eq matches[1], "A Foo Thing", "Matches for custom create - name"
+
 runTests()
 testStats()

@@ -56,7 +56,7 @@ searchThing = (thing, selectors, args) ->
     if matches = /^\[([A-Za-z0-9_]+)\]$/.exec selectors
       return [["type", "isa", matches[1]]]
 
-  # TODO - this needs to much more general
+  # TODO - this needs to be much more general
   if utils.isString selectors
     # build the list of selectors to pass into the search algo
     selectors = buildSelectorsFromString selectors

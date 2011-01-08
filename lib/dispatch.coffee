@@ -5,8 +5,9 @@ class Dispatcher
   install: (func, desc, tokens...) ->
     specs =
       S:           "(?:\\s+)"
-      ID:          "([\\w\\d ]+\\[[\\w\\d]+\\]|[\\d]+|[\\w]+|\\\"[\\w ]+\\\")"
+      ID:          "([\\w\\d ]+\\[[\\w\\d]+\\]|[\\d]+|[\\w ]+|\\\"[\\w ]+\\\")"
 #      ALPHANUM:    "([\\[\\]\\w\\d\\.\\/]+|\\\"[\\[\\]\\w\\d\\. \\/]+\\\")"
+      CLS:         "([\\w\\d]+)"
       ALPHANUM:    "(.+|\\\".+\\\")"
 
     strRegex = (specs[tok] || tok for tok in tokens).join(specs.S)
@@ -15,7 +16,7 @@ class Dispatcher
   installRegex: (func, regex, desc, tokens) ->
     @cmds.push [regex, func, desc, tokens]
 
-  dispatch: (conn, cmd) ->
+  method: (conn, cmd) ->
     cmd = utils.trim cmd
     for cmdSpec in @cmds
       [regex, func, desc] = cmdSpec
@@ -23,7 +24,12 @@ class Dispatcher
       matches = regex.exec cmd
       if matches
         matches = (utils.trimQuotes match for match in matches)
-        return func.apply(null, [conn].concat(matches[1..]))
+        return [func, matches[1..]]
+
+  dispatch: (conn, cmd) ->
+    [func, matches] = this.method(conn, cmd)
+    if func
+      return func.apply(null, [conn].concat(matches))
 
   formattedCommands: ->
     maxCommand = maxDescription = 0
