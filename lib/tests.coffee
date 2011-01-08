@@ -381,11 +381,11 @@ testSet "Tickets", () ->
 
   eq td.canTraverse(characters[0]), false, "cannot traverse without a ticket"
 
-  response = ta.buyTicket(characters[0])
+  response = ta.buyticket(characters[0])
   ok response.match(/enough money/g), "not enough money"
 
   characters[0].attr("money", 50)
-  response = ta.buyTicket(characters[0])
+  response = ta.buyticket(characters[0])
   ok response.match(/purchased/g), "purchased"
 
   equals characters[0].attr("money"), 40, 'decrement of character money'

@@ -6,7 +6,7 @@ class TicketAgent extends Character
   doorName: ->
     registry.get(@attr("door"))?.name || 'unknown'
 
-  "buyTicket": (character) ->
+  "buyticket": (character) ->
     if character.attr("money") || 0 > @attr("cost")
       character.attr "money", character.attr("money") - @attr("cost")
       ticket = new Ticket "Ticket to " + @doorName(),
@@ -17,17 +17,13 @@ class TicketAgent extends Character
       "You do not have enough money to buy a ticket via " + registry.get(@attr("door"))?.name
 
   interface:
-    "buy-ticket": 1
-
-CORE.TicketAgent = TicketAgent
+    "buyticket": 1
 
 class Ticket extends Thing
   constructor: ->
     super
 
   door: -> @attr("door")
-
-CORE.Ticket = Ticket
 
 class TicketDoor extends Door
   constructor: ->
@@ -39,5 +35,7 @@ class TicketDoor extends Door
       return true if ticket.attr("door") is @gid
     false
 
-CORE.TicketDoor = TicketDoor
+CORE.TicketAgent = TicketAgent
+CORE.Ticket      = Ticket
+CORE.TicketDoor  = TicketDoor
 
