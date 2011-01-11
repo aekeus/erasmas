@@ -415,5 +415,9 @@ testSet "Dispatcher", () ->
   eq matches[0], "TicketAgent", "Matches for custom create - class"
   eq matches[1], "A Foo Thing", "Matches for custom create - name"
 
+  [func, matches] = k.dispatcher.method conn, "buyticket \"Foo TicketAgent\""
+
+  debug func, matches
+
 runTests()
 testStats()
