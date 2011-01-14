@@ -4,7 +4,7 @@ class Door extends Thing
 
   destination: -> @attr("destination")
 
-  canTraverse: (character) -> true
+  canTraverse: (character) -> [true, null]
 
   isContainer: -> false
 
@@ -16,7 +16,7 @@ class LockingDoor extends Door
     @attributes.locked = true
 
   canTraverse: (character) ->
-    not @attr("locked")
+    [not @attr("locked"), "It is locked"]
 
   hasKey: (character) ->
     attributes = @attributes

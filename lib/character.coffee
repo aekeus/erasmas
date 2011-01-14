@@ -90,4 +90,14 @@ class Character extends Thing
   send: (msg) ->
     @connection.send(msg)
 
-CORE.Character = Character
+class PlayerCharacter extends Character
+  constructor: () ->
+    super
+
+class NPC extends Character
+  constructor: () ->
+    super
+
+CORE.PlayerCharacter = PlayerCharacter
+CORE.Character       = Character
+CORE.NPC             = NPC

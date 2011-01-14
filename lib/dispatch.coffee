@@ -63,7 +63,7 @@ class Dispatcher
     if func
       return func.apply(null, [conn].concat(matches))
     else
-      "Invalid command"
+      null
 
   #
   #  Generate a formatted list of valid commands

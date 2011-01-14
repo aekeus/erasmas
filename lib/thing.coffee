@@ -228,6 +228,9 @@ class Thing
       me = me.constructor.__super__
     return false
 
+  isType: (className) ->
+    className is this.constructor.name
+
   isContainer: ->
     true
 

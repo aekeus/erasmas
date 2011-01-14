@@ -23,6 +23,12 @@ class TicketAgent extends Character
     else
       "You do not have enough money to buy a ticket via " + registry.get(@attr("door"))?.name
 
+  hear: (evt) =>
+    return unless evt.source.isa("PlayerCharacter")
+    switch evt.type
+      when "talk"
+        @broadcast new Event "talk", this, words: "Would you like to buy a ticket to " + registry.get(@attr("door"))?.name + "?"
+
   interface:
     "buyticket": 1
 
@@ -52,11 +58,10 @@ class TicketDoor extends Door
       correctTicket = ticket if ticket.attr("door") is @gid
     if correctTicket?
       correctTicket.parent.remove correctTicket
-      true
+      return [true, ""]
     else
-      false
+      return [false, "You will need to buy a ticket to this destination"]
 
 CORE.TicketAgent = TicketAgent
 CORE.Ticket      = Ticket
 CORE.TicketDoor  = TicketDoor
-
