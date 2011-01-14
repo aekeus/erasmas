@@ -8,8 +8,6 @@ class Door extends Thing
 
   isContainer: -> false
 
-CORE.Door = Door
-
 class LockingDoor extends Door
   constructor: ->
     super
@@ -43,9 +41,6 @@ class LockingDoor extends Door
     lock: 1
     unlock: 1
 
-CORE.LockingDoor = LockingDoor
-
-
 class DoorKey extends Thing
   constructor: ->
     super
@@ -54,4 +49,7 @@ class DoorKey extends Thing
   isContainer: ->
     false
 
-CORE.DoorKey = DoorKey
+CORE.Door        = Door
+CORE.LockingDoor = LockingDoor
+CORE.DoorKey     = DoorKey
+

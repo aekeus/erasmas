@@ -20,10 +20,12 @@ class Kernel
     dispatcher.install @logic_save,          "save world to default filename",                     "save"
     dispatcher.install @logic_create_character, "create a new character",                          "create", "character", "ALPHANUM", "with", "password", "ALPHANUM"
     dispatcher.install @logic_set,           "set an attribute of a thing to a value",             "set",      "ALPHANUM", "of", "ID", "to", "ALPHANUM"
+    dispatcher.install @logic_implicit_set,  "set an attribute of the current thing to a value",   "set",      "ALPHANUM", "to", "ALPHANUM"
     dispatcher.install @logic_append,        "append a value to a list attribute of a thing",      "append",   "ALPHANUM", "to", "ALPHANUM", "of", "ID"
     for verb in ["inv", "inventory"]
       dispatcher.install @logic_inventory,   "display inventory",                                  verb
     dispatcher.install @logic_link,          "link two rooms via two doors",                       "link",     "ID", "to", "ID"
+    dispatcher.install @logic_link,          "link room to current room",                          "link",     "ID"
     dispatcher.install @logic_move,          "move a thing to a new parent",                       "move",     "ID", "to", "ID"
     dispatcher.install @logic_take,          "take a thing",                                       "take",     "ID"
     dispatcher.install @logic_put,           "put a thing in another thing",                       "put",      "ID", "(?:in|on)", "ID"
@@ -47,6 +49,7 @@ class Kernel
     dispatcher.install @logic_login,         "login with username and password",                   "login",    "ALPHANUM", "ALPHANUM"
     dispatcher.install @logic_logout,        "logout of system",                                   "logout"
     dispatcher.install @logic_say,           "speak to everyone in a room",                        "say",      "ALPHANUM"
+    dispatcher.install @logic_modify,        "set the current object to be modified",              "modify",   "ID"
     dispatcher.install @logic_commands,      "show a list of commands",                            "commands"
     dispatcher.install @logic_help,          "show help contents",                                 "help"
 #    dispatcher.install @logic_go,            "go through a door",                                  "ALPHANUM"
@@ -254,6 +257,17 @@ class Kernel
     thing.inspection()
 
   #
+  #  Set this thing to be the object that will be modified by subsequent commands
+  #
+  #  selector - thing selector {Selector}
+  #
+  logic_modify: (conn, selector) =>
+    thing = @world.search selector, one: true
+    return utils.notFoundMsg selector unless thing?
+    conn.currentThing = thing
+    "You are now modifying #{conn.currentThing}"
+
+  #
   #  Logout of system
   #
   logic_logout: (conn) =>
@@ -390,6 +404,23 @@ class Kernel
     "#{attribute} of #{target} set to #{v}"
 
   #
+  #  Set an attribute of the currentThing or the connection character to a value
+  #
+  #  attribute - name of the attribute      {String}
+  #  value     - string or specicial string {String}
+  #
+  logic_implicit_set: (conn, attribute, value) =>
+    assert conn?, "connection required"
+    assert attribute?, "attribute required"
+    assert value?, "value required"
+
+    target = conn.currentThing || conn.character
+
+    return "#{attribute} of #{target} cannot be set to #{value}" unless target.canSetAttr attribute, value
+    v = target.attr attribute, value
+    "#{attribute} of #{target} set to #{v}"
+
+  #
   #  Link two rooms together. Create two doors that share their name with their destination room.
   #  i.e. link Bedroom to Bathroom will create a door named Bathroom in the Bedroom and a door named
   #  Bedroom in the Bathroom.
@@ -398,12 +429,16 @@ class Kernel
   #  selector2 - second room selector {selector}
   #
   logic_link: (conn, selector1, selector2) =>
-    mAssert conn.constructor.name is "Connection", selector1?, selector2?
+    mAssert conn.constructor.name is "Connection", selector1?
 
     room1 = @world.search selector1, one: true
     return utils.notFoundMsg selector1 unless room1?
-    room2 = @world.search selector2, one: true
-    return utils.notFoundMsg selector2 unless room2?
+
+    if selector2?
+      room2 = @world.search selector2, one: true
+      return utils.notFoundMsg selector2 unless room2?
+    else
+      room2 = conn.character.parent
 
     room1Door = new Door room2.name, destination: room2.gid
     room2Door = new Door room1.name, destination: room1.gid
