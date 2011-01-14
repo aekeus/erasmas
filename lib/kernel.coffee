@@ -307,8 +307,13 @@ class Kernel
     return false unless door?
 
     destinationRoom = @world.search door.destination(), one: true
-    return "destination room not found." unless destinationRoom?
-    return "you cannot go #{destinationRoom.mqname()}." unless door.canTraverse(conn.character)
+    return "Destination room not found." unless destinationRoom?
+
+    [ok, reason] = door.canTraverse(conn.character)
+    debug "ok = #{ok}"
+    debug "reason = #{reason}"
+    unless ok
+      return "You cannot go to the #{destinationRoom.mqname()} in #{destinationRoom.closestOfType('Zone')?.mqname()}. #{reason}."
 
     response = @logic_move conn, conn.character.gid, destinationRoom.gid
     response = @logic_look conn unless response

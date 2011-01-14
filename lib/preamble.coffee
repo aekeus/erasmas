@@ -4,7 +4,7 @@ fs   = require("fs")
 web  = require('./lib/node-router').getServer()
 nr   = require './lib/node-router'
 
-QUIET = 1
+QUIET = 0
 debug = (text) ->
   puts "DEBUG: #{text}" if not QUIET
 
