@@ -22,6 +22,7 @@ class Kernel
     dispatcher.install @logic_set,           "set an attribute of a thing to a value",             "set",      "ALPHANUM", "of", "ID", "to", "ALPHANUM"
     dispatcher.install @logic_implicit_set,  "set an attribute of the current thing to a value",   "set",      "ALPHANUM", "to", "ALPHANUM"
     dispatcher.install @logic_append,        "append a value to a list attribute of a thing",      "append",   "ALPHANUM", "to", "ALPHANUM", "of", "ID"
+    dispatcher.install @logic_append,        "append a value to a list in the current thing",      "append",   "ALPHANUM", "to", "ALPHANUM"
     for verb in ["inv", "inventory"]
       dispatcher.install @logic_inventory,   "display inventory",                                  verb
     dispatcher.install @logic_link,          "link two rooms via two doors",                       "link",     "ID", "to", "ID"
@@ -372,13 +373,16 @@ class Kernel
   #
   #  value     - value to append  {String}
   #  attribute - attribute name   {String}
-  #  selector  - target selector  {String}
+  #  selector  - target selector  {String} [OPTIONAL]
   #
-  logic_append: (conn, value, attribute, selector) =>
-    mAssert conn.constructor.name is "Connection", attribute?, value?, selector?
+  logic_append: (conn, value, attribute) =>
+    mAssert conn.constructor.name is "Connection", attribute?, value?
 
-    thing = @world.search selector, one: true
-    return utils.notFoundMsg selector unless thing
+    if selector?
+      thing = @world.search selector, one: true
+      return utils.notFoundMsg selector unless thing
+    else
+      thing = conn.currentThing || conn.character
     return "#{attribute} cannot be set on #{thing}" unless thing.canSetAttr attribute, value
     current = thing.attr(attribute)
     return "#{attribute} is not a list" unless current? and utils.isArray current
