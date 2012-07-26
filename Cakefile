@@ -1,6 +1,6 @@
 fs            = require 'fs'
 path          = require 'path'
-puts          = require("sys").puts
+puts          = require("util").puts
 {spawn, exec} = require 'child_process'
 
 srcfiles = [
