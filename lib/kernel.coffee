@@ -37,6 +37,7 @@ class Kernel
       dispatcher.install @logic_rm,          "remove a thing",                                     verb,       "ID"
     dispatcher.install @logic_create_door,   "create a door to a room",                            "create",   "door", "ALPHANUM", "to", "ID"
     dispatcher.install @logic_create_room,   "create a named room",                                "create",   "room", "ALPHANUM"
+    dispatcher.install @logic_create_linked_room, "create a named room and link to current room",  "create",   "linked", "room", "ALPHANUM"
     dispatcher.install @logic_create_thing,  "create a named thing",                               "create",   "thing", "ALPHANUM"
     dispatcher.install @logic_create_custom, "create a custom named thing",                        "create",   "CLS", "ALPHANUM"
     dispatcher.install @logic_create_custom, "create a custom thing",                              "create",   "CLS"
@@ -532,6 +533,19 @@ class Kernel
 
     container.add room
     return "#{room} created in #{container}"
+
+  logic_create_linked_room: (conn, name) =>
+    assert conn.constructor.name is "Connection", "conn must be a connection"
+    assert name?,                                 "name required"
+
+    room = new Room name,
+      created_by: conn.character.gid
+    container = conn.character.closestOfType("Zone") || @world
+    return "#{container} cannot contain #{room}" unless container.canAdd room
+
+    container.add room
+    @logic_link conn, room.gid.toString()
+    return "#{room} created in #{container} and linked via door"
 
   #
   #  Create a door in this room - link it to another room
