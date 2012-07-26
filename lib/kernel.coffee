@@ -243,7 +243,9 @@ class Kernel
   #  selector - thing selector {Selector}
   #
   logic_look_at: (conn, selector) =>
-    thing = conn.character.parent.search selector, one: true
+    thing = conn.character.parent.search selector,
+      one: true,
+      soft: true
     return utils.notFoundMsg selector unless thing?
     thing.detailed()
 
@@ -411,7 +413,7 @@ class Kernel
   #  Set an attribute of the currentThing or the connection character to a value
   #
   #  attribute - name of the attribute      {String}
-  #  value     - string or specicial string {String}
+  #  value     - string or speciial string  {String}
   #
   logic_implicit_set: (conn, attribute, value) =>
     assert conn?, "connection required"

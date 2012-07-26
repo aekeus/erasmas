@@ -16,7 +16,7 @@ class Thing
     # other Things listening to me
     @listeners = {}
 
-    # use the class name for the object name if non given
+    # use the class name for the object name if none given
     @name = "#{this.constructor.name}" unless @name
 
   # subclass children to provide custom description formats

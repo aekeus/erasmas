@@ -19,7 +19,7 @@ class WebInterface
     styleLink = () -> "<link href=\"/style.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />"
     header = (title) -> "<html><head>#{styleLink()}<title>Commands</title></head><body>"
 
-    web.get "/style.5Bcss", nr.staticHandler "static/style.css"
+    web.get "/style.css", nr.staticHandler "static/style.css"
 
     web.get "/commands", (req, res) ->
       buffer  = "#{header('Commands')}<h1>Commands</h1><pre>"

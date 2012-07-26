@@ -327,6 +327,11 @@ testSet "Kernel logic methods", () ->
   things = world.search "[Room]"
   equals things.length, 3, "find all rooms"
 
+  things = world.search "entr",
+    soft: true
+  console.log things
+  equals things.length, 1, "one soft match"
+
 testSet "Character creation", () ->
   [world, rooms, characters, zones, doors] = testWorld()
   k = new Kernel
