@@ -2,6 +2,7 @@ class Thing
   constructor: (@name, @attributes, existingGid) ->
     # key / value pairs of attributes
     @attributes ||= {}
+    @attributes.created_at ||= new Date().toString()
 
     # global Thing id
     @gid = existingGid || gid += 1
