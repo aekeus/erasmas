@@ -42,6 +42,7 @@ class Kernel
     dispatcher.install @logic_create_custom, "create a custom named thing",                        "create",   "CLS", "ALPHANUM"
     dispatcher.install @logic_create_custom, "create a custom thing",                              "create",   "CLS"
     dispatcher.install @logic_create_thing,  "create a thing",                                     "create",   "thing"
+    dispatcher.install @logic_copy,          "make a copy of a thing",                             "copy",     "ALPHANUM", "as", "ALPHANUM"
     dispatcher.install @logic_look_at,       "look at a thing",                                    "look",     "at", "ID"
     dispatcher.install @logic_look_at,       "look at a thing",                                    "look",     "ID"
     dispatcher.install @logic_look,          "look at current room",                               "look"
@@ -328,8 +329,8 @@ class Kernel
     return "Destination room not found." unless destinationRoom?
 
     [ok, reason] = door.canTraverse(conn.character)
-    debug "ok = #{ok}"
-    debug "reason = #{reason}"
+    #debug "ok = #{ok}"
+    #debug "reason = #{reason}"
     unless ok
       return "You cannot go to the #{destinationRoom.mqname()} in #{destinationRoom.closestOfType('Zone')?.mqname()}. #{reason}."
 
@@ -534,6 +535,35 @@ class Kernel
     container.add room
     return "#{room} created in #{container}"
 
+  #
+  #  Copy an existing object, change its name and add it to the
+  #  existing objects parent.
+  #
+  #  selector - thing selector        {Selector}
+  #  name     - name of the new thing {String}
+  #
+  logic_copy: (conn, selector, name) =>
+    assert conn.constructor.name is "Connection", "conn must be a connection"
+    assert selector?,                             "selector required"
+    assert name?,                                 "name required"
+
+    source = conn.character.parent.search selector, one: true
+    return "#{selector} not found" unless source?
+
+    rep = source.rep()
+    clone = new CORE[rep.type](name, utils.clone(rep.attributes), null)
+    clone.attributes.created_at = new Date().toString()
+    clone.attributes.created_by = conn.character.gid
+
+    source.parent.add clone
+
+    return "copied #{selector} as #{name}"
+
+  #
+  #  Create a new room and link it to the current room
+  #
+  #  name - name of the new room and door {String}
+  #
   logic_create_linked_room: (conn, name) =>
     assert conn.constructor.name is "Connection", "conn must be a connection"
     assert name?,                                 "name required"

@@ -76,6 +76,9 @@ utils =
   looksLikeFloat: (s) -> s.match(/^[0-9\.]+$/g)
   looksLikeNumber: (s) -> looksLikeFloat(s) or looksLikeInteger(s)
 
+  clone: (thing) ->
+    JSON.parse JSON.stringify thing
+
   parseValue: (v) ->
     switch v
       when "false"

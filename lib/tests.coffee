@@ -212,7 +212,7 @@ testSet "Event Routing and Registration", () ->
   z.add r1
   w.add z
 
-testSet "Kernel logic methods", () ->
+testSet "Kernel logic methods 1", () ->
   [world, rooms, characters, zones, doors] = testWorld()
   k = new Kernel
   k.installWorld world
@@ -274,7 +274,13 @@ testSet "Kernel logic methods", () ->
   response = k.logic_find conn, "Room 1[Room]"
   ok response.length > 1, "type designator - room found"
 
-testSet "Kernel logic methods", () ->
+  response = k.logic_copy conn, p.gid, "New Paper"
+  ok response.match(/copied/), "new paper created"
+
+  results = conn.character.parent.search "New Paper", one: true
+  ok results.name is "New Paper", "correct new item found"
+
+testSet "Kernel logic methods - 2", () ->
   [world, rooms, characters, zones, doors] = testWorld()
   k = new Kernel
   k.installWorld world
@@ -329,7 +335,6 @@ testSet "Kernel logic methods", () ->
 
   things = world.search "entr",
     soft: true
-  console.log things
   equals things.length, 1, "one soft match"
 
 testSet "Character creation", () ->
