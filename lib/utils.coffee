@@ -45,6 +45,7 @@ utils =
   isString:   (obj) -> !!(obj is '' or (obj and obj.charCodeAt and obj.substr))
   isNumber:   (obj) -> (obj is +obj) or toString.call(obj) is '[object Number]'
   isFunction: (obj) -> !!(obj and obj.constructor and obj.call and obj.apply)
+  isBoolean:  (obj) -> obj is true or obj is false
 
   trimQuotes: (match) ->
     match = match.replace /^\"+/, ""
@@ -69,6 +70,8 @@ utils =
       "String"
     else if utils.isNumber v
       "Number"
+    else if utils.isBoolean v
+      "Boolean"
     else
       "Unknown"
 
