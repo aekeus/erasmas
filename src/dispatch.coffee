@@ -1,3 +1,5 @@
+{ utils } = require './utils'
+
 class Dispatcher
   constructor: () ->
     @cmds = []

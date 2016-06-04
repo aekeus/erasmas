@@ -1,72 +1,5 @@
 QUIET = 0
 
-testWorld = () ->
-  w = new World()
-
-  z = new Zone "Zone"
-
-  r1 = new Room("Room 1")
-  r2 = new Room("Room 2")
-  entrance = new Room("Entrance")
-
-  c1 = new Character("Character 1")
-  c2 = new Character("Character 2")
-  c3 = new Character("Character 3")
-
-  d1 = new Door "Room 1", destination: r1.gid
-
-  r1.add(c1)
-  r2.add(c2)
-  r2.add(c3)
-
-  r2.add(d1)
-
-  z.add r1
-  z.add r2
-  z.add entrance
-
-  w.add z
-
-  [w, [r1, r2], [c1, c2, c3], [z], [d1]]
-
-testSet "Closest", () ->
-  [world, rooms, characters] = testWorld()
-  equals characters[0].closestOfType("Room").name, "Room 1", "Closest one level"
-  equals characters[1].closestOfType("World").name, "World", "Closest two levels"
-  equals characters[1].closestOfType("sdhjfksjd"), null, "Closest not found"
-
-testSet "Thing", () ->
-  t = new Thing("name", { "age": 38 });
-  equals t.name, "name", "name"
-  equals t.attr("age"), 38, "age attr"
-  equals t.attr("foo"), undefined, "undefined attr"
-
-  t.attr "bar", "99"
-  equals t.attr("bar"), 99, "attr set"
-
-  ok t.gid?, 'gid defined'
-  ok t.gid > 0, "gid > 0"
-
-  rep = t.rep()
-  ok rep.gid?, 'rep.gid defined'
-  equals rep.name, "name", "rep.name"
-  equals rep.attributes.age, 38, 'rep.age'
-
-testSet "Room", () ->
-  t = new Room("Entrance")
-  equals t.name, "Entrance", "room creation"
-  t.add(new Door("West", { "destination": "Unknown" }))
-  ok t.doorByName("West")?, "doorByName"
-  equals t.doorByName("asdfasd")?, false, "doorByName does not exist"
-  rep = t.rep()
-  equals rep.name, "Entrance", "rep.name"
-
-testSet "Door", () ->
-  d = new Door("North", { destination: "Entrance" })
-  equals d.name, "North", "name"
-  equals d.constructor.name, "Door", "class name"
-  equals d.destination(), "Entrance", "destination name"
-
 testSet "Character enters room", () ->
   r = new Room("Room 1")
   c1 = new Character("Character 1")
@@ -83,24 +16,6 @@ testSet "Character enters room", () ->
 
   c1.speak "hello"
   c3.speak "hello"
-
-testSet "Input parsing", () ->
-  tokens = utils.parse("hello")
-  equals tokens.length, 1, 'simple parse'
-
-  tokens = utils.parse("hello world")
-  equals tokens.length, 2, 'simple parse 2'
-
-  tokens = utils.parse('hello "world at large"')
-  equals tokens.length, 2, 'quoted parse'
-
-  equals tokens[0], 'hello', 'quoted parse first token'
-  equals tokens[1], 'world at large', 'quoted parse second token'
-
-  tokens = utils.parse('hello "world at large" another "quoted token"')
-  equals tokens.length, 4, 'quoted parse four tokens'
-
-  equals tokens[3], 'quoted token', 'quoted parse fourth token'
 
 testSet "Thing Hierarchy", () ->
   t    = new Thing("Foo", {})
@@ -139,24 +54,6 @@ testSet "Thing Hierarchy", () ->
 
   equals t.childrenByTypeAndName("Thing", "Bar").length, 1, "childrenByTypeAndName"
   equals t.childrenByTypeAndName("Thing", "Baaskljdfhr").length, 0, "childrenByTypeAndName none"
-
-testSet "Thing formatting", () ->
-  t1 = new Thing("a")
-  equals t1.name, "a", "name"
-  equals t1.qname(), "\"a\"", "qname"
-  equals t1.mqname(), "a", "mqname"
-
-  t2 = new Thing("a b")
-  equals t2.name, "a b", "name"
-  equals t2.qname(), "\"a b\"", "qname"
-  equals t2.mqname(), "\"a b\"", "mqname"
-
-  t3 = new Thing("foo")
-
-  equals utils.textForThings([]), "", "textForArrayOfThings none"
-  equals utils.textForThings([t1]), "a", "textForArrayOfThings one"
-  equals utils.textForThings([t1, t2]), "a or \"a b\"", "textForArrayOfThings two"
-  equals utils.textForThings([t1, t2, t3]), "a, \"a b\" or foo", "textForArrayOfThings three"
 
 testSet "Thing - deep selection", () ->
   w = new World()
@@ -403,24 +300,6 @@ testSet "Tickets", () ->
   equals tickets[0].attr("door"), td.gid, "ticket destination"
 
   eq td.canTraverse(characters[0]), true, "can traverse with a ticket"
-
-testSet "Dispatcher", () ->
-  [world, rooms, characters, zones, doors] = testWorld()
-  k = new Kernel
-  k.installWorld world
-
-  conn = new Connection null
-  conn.connect characters[0]
-
-  [func, matches] = k.dispatcher.method conn, "go North"
-  eq func, k.logic_go, "go PLACE"
-  eq matches[0], "North", "go PLACE matches"
-
-  [func, matches] = k.dispatcher.method conn, "create TicketAgent \"A Foo Thing\""
-  eq func, k.logic_create_custom, "create custom thing - func"
-
-  eq matches[0], "TicketAgent", "Matches for custom create - class"
-  eq matches[1], "A Foo Thing", "Matches for custom create - name"
 
 runTests()
 testStats()

@@ -4,6 +4,9 @@
 { Character } = require '../dist/character'
 { Door } = require '../dist/door'
 { Thing } = require '../dist/thing'
+{ utils } = require '../dist/utils'
+{ Kernel } = require '../dist/kernel'
+{ Connection } = require '../dist/connection'
 
 tap = require 'tap'
 
@@ -67,7 +70,70 @@ testDoor = ->
   tap.equal d.constructor.name, "Door", "class name"
   tap.equal d.destination(), "Entrance", "destination name"
 
+testClosest = ->
+  [world, rooms, characters] = testWorld()
+  tap.equal characters[0].closestOfType("Room").name, "Room 1", "Closest one level"
+  tap.equal characters[1].closestOfType("World").name, "World", "Closest two levels"
+  tap.equal characters[1].closestOfType("sdhjfksjd"), null, "Closest not found"
+
+testInputParsing = ->
+  tokens = utils.parse("hello")
+  tap.equal tokens.length, 1, 'simple parse'
+
+  tokens = utils.parse("hello world")
+  tap.equal tokens.length, 2, 'simple parse 2'
+
+  tokens = utils.parse('hello "world at large"')
+  tap.equal tokens.length, 2, 'quoted parse'
+
+  tap.equal tokens[0], 'hello', 'quoted parse first token'
+  tap.equal tokens[1], 'world at large', 'quoted parse second token'
+
+  tokens = utils.parse('hello "world at large" another "quoted token"')
+  tap.equal tokens.length, 4, 'quoted parse four tokens'
+
+  tap.equal tokens[3], 'quoted token', 'quoted parse fourth token'
+
+testThingFormatting = ->
+  t1 = new Thing("a")
+  tap.equal t1.name, "a", "name"
+  tap.equal t1.qname(), "\"a\"", "qname"
+  tap.equal t1.mqname(), "a", "mqname"
+
+  t2 = new Thing("a b")
+  tap.equal t2.name, "a b", "name"
+  tap.equal t2.qname(), "\"a b\"", "qname"
+  tap.equal t2.mqname(), "\"a b\"", "mqname"
+
+  t3 = new Thing("foo")
+
+  tap.equal utils.textForThings([]), "", "textForArrayOfThings none"
+  tap.equal utils.textForThings([t1]), "a", "textForArrayOfThings one"
+  tap.equal utils.textForThings([t1, t2]), "a or \"a b\"", "textForArrayOfThings two"
+  tap.equal utils.textForThings([t1, t2, t3]), "a, \"a b\" or foo", "textForArrayOfThings three"
+
+testDispatcher = ->
+  [world, rooms, characters, zones, doors] = testWorld()
+  k = new Kernel
+  k.installWorld world
+
+  conn = new Connection null
+  conn.connect characters[0]
+
+  [func, matches] = k.dispatcher.method conn, "go North"
+  tap.equal func, k.logic_go, "go PLACE"
+  tap.equal matches[0], "North", "go PLACE matches"
+
+  [func, matches] = k.dispatcher.method conn, "create TicketAgent \"A Foo Thing\""
+  tap.equal func, k.logic_create_custom, "create custom thing - func"
+
+  tap.equal matches[0], "TicketAgent", "Matches for custom create - class"
+  tap.equal matches[1], "A Foo Thing", "Matches for custom create - name"
+
 testThing()
 testRoom()
 testDoor()
-
+testClosest()
+testInputParsing()
+testThingFormatting()
+testDispatcher()

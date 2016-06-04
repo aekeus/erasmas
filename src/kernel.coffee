@@ -1,3 +1,9 @@
+{ Server } = require './server'
+{ Registry } = require './registry'
+{ Dispatcher } = require './dispatch'
+{ World } = require './world'
+{ utils } = require './utils'
+
 #
 #  The Kernel controls the cycle by cycle workings of the MUSH. It handles the tree update logic, sends and receives messages from
 #  connection sockets and is responsible for loading and saving world files.
@@ -5,7 +11,7 @@
 class Kernel
   constructor: (@port = 8000) ->
     @server       = new Server @port, this.connectionHandler
-    @registry     = new Registry
+    @registry     = Registry
     @world        = new World "DefaultWorld"
     @dispatcher   = new Dispatcher
     @setupDispatcher @dispatcher

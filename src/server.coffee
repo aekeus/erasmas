@@ -1,3 +1,5 @@
+tcp = require 'net'
+
 class Server
   constructor: (@port, @timeout = 2) ->
     serv = this
