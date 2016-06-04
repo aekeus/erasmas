@@ -82,3 +82,5 @@ class Dispatcher
       buffer.push cmd + " " + utils.repeat(" ", maxCommand - cmd.length) + "#{spec[2]}"
 
     buffer
+
+module.exports.Dispatcher = Dispatcher

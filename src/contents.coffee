@@ -32,3 +32,4 @@ class Contents
 
   findByTypeAndName: (type, name) -> x for x in @things when x.name is name and x.constructor.name is type
 
+module.exports.Contents = Contents

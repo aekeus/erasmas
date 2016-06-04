@@ -120,4 +120,4 @@ class MazeBuilder extends Thing
     start:     1
     construct: 1
 
-CORE.MazeBuilder = MazeBuilder
+module.exports.MazeBuilder = MazeBuilder

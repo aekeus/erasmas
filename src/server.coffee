@@ -16,3 +16,5 @@ class Server
     puts "Server started on port " + @port
     @serv.listen @port
     @console.listen 9000
+
+module.exports.Server = Server

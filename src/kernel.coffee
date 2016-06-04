@@ -692,3 +692,5 @@ class Kernel
       world = wb.build()
       this.installWorld world
       doneCB()
+
+module.exports.Kernel = Kernel

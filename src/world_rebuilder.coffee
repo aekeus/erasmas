@@ -11,3 +11,5 @@ class WorldRebuilder
 
     builder @json
 
+modules.exports =
+  WorldRebuilder: WorldRebuilder

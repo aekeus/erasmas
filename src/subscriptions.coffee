@@ -33,3 +33,6 @@ class Subscription
   debug: () ->
     debug "#{this.eventType} - #{this.subscriber.name} - #{this.subscriber.name}"
 
+module.exports =
+  Subscription: Subscription
+  SubscriptionRegistry: SubscriptionRegistry

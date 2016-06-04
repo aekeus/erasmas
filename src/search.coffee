@@ -89,3 +89,5 @@ searchThing = (thing, selectors, args={}) ->
 
   return results[0] if results? and args.one
   return results
+
+module.exports.searchThing = searchThing

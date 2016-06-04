@@ -6,5 +6,5 @@ class Window extends Thing
     destination = registry.get(+@attributes.destination)
     "You see into #{destination.name}"
 
-CORE.Window = Window
+module.exports.Window = Window
 

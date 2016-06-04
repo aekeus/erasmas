@@ -27,3 +27,5 @@ buildSampleWorld = (w) ->
   w.add(room1)
   w.add(room2)
   w.add(entrance)
+
+module.exports.buildSampleWorld = buildSampleWorld

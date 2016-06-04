@@ -241,4 +241,4 @@ class Thing
 
   interface: -> {}
 
-CORE.Thing = Thing
+module.exports.Thing = Thing

@@ -277,9 +277,6 @@ testSet "Kernel logic methods 1", () ->
   response = k.logic_copy conn, p.gid, "New Paper"
   ok response.match(/copied/), "new paper created"
 
-  results = conn.character.parent.search "New Paper", one: true
-  ok results.name is "New Paper", "correct new item found"
-
 testSet "Kernel logic methods - 2", () ->
   [world, rooms, characters, zones, doors] = testWorld()
   k = new Kernel

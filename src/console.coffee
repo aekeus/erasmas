@@ -1,12 +1,11 @@
-class Connection
+class Console
   constructor: (@socket) ->
-    conn = this
     return unless @socket
-    log "Connection accepted from " + socket.remoteAddress
+    log "Console accepted from " + socket.remoteAddress
     buffer = ""
 
     socket.addListener "data", (packet) ->
-#      try
+      try
         buffer += packet
         i = buffer.indexOf("\r\n")
         while i isnt -1
@@ -20,8 +19,8 @@ class Connection
             kernel.handleInput conn, tokens, "#{message}"
           buffer = buffer.slice i + 2
           i = buffer.indexOf("\r\n")
-#      catch error
-#        puts "Uncaught exception! " + error
+      catch error
+        puts "Uncaught exception! " + error
 
     socket.addListener "eof", (packet) ->
       try
@@ -35,20 +34,7 @@ class Connection
       catch error
         puts "Uncaught exception! " + error
 
-  parse: (text) ->
-    tokens = utils.parse text
-
-  quit: (text) ->
-    puts "QUIT: " + text
-
   send: (text) ->
     @socket.write(text + utils.eol + utils.prompt) if @socket?
 
-  connect: (character) ->
-    character.connect this
-    @character = character
-
-  disconnect: ->
-    @character.disconnect()
-    @character = null
-    @socket.end()
+module.exports.Console = Console

@@ -49,7 +49,8 @@ class DoorKey extends Thing
   isContainer: ->
     false
 
-CORE.Door        = Door
-CORE.LockingDoor = LockingDoor
-CORE.DoorKey     = DoorKey
+module.exports =
+  Door: Door
+  LockingDoor: LockingDoor
+  DoorKey: DoorKey
 

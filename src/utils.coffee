@@ -101,3 +101,4 @@ utils =
         else
           v
 
+module.exports.utils = utils

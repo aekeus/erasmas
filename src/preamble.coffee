@@ -1,5 +1,5 @@
 tcp  = require("net")
-puts = require("util").puts
+puts = console.log
 fs   = require("fs")
 web  = require('./lib/node-router').getServer()
 nr   = require './lib/node-router'

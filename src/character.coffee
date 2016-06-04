@@ -72,7 +72,7 @@ class Character extends Thing
     msg
 
   rename: (newName) ->
-    this.tell "talks"
+    this.tell "talks",
       "words": "I am changing my name to #{newName}"
       "source": this
     @name = newName
@@ -98,6 +98,7 @@ class NPC extends Character
   constructor: () ->
     super
 
-CORE.PlayerCharacter = PlayerCharacter
-CORE.Character       = Character
-CORE.NPC             = NPC
+module.exports =
+  PlayerCharacter: PlayerCharacter
+  Character: Character
+  NPC: NPC

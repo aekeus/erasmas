@@ -16,8 +16,6 @@ class CoffeeMaker extends Thing
   interface:
     start: 1
 
-CORE.CoffeeMaker = CoffeeMaker
-
 class CupOfCoffee extends Thing
   constructor: () ->
     super
@@ -28,8 +26,6 @@ class CupOfCoffee extends Thing
 
   interface:
     drink: 1
-
-CORE.CupOfCoffee = CupOfCoffee
 
 class Clock extends Thing
   constructor: () ->
@@ -43,8 +39,6 @@ class Clock extends Thing
 
   interface:
     "look-at": 1
-
-CORE.Clock = Clock
 
 class OnOff extends Thing
   constructor: () ->
@@ -67,8 +61,6 @@ class OnOff extends Thing
   interface:
     turn: 1
 
-CORE.OnOff = OnOff
-
 class Paper extends Thing
   constructor: ->
     super
@@ -84,5 +76,9 @@ class Paper extends Thing
     "write-on": 1
     "read": 1
 
-CORE.Paper = Paper
-exports.Paper = Paper
+module.exports =
+  CoffeeMaker: CoffeeMaker
+  CupOfCoffee: CupOfCoffee
+  Clock: Clock
+  OnOff: OnOff
+  Paper: Paper

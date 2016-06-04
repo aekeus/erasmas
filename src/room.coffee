@@ -20,4 +20,4 @@ class Room extends Thing
 
   hear: (evt) -> @broadcast evt
 
-CORE.Room = Room
+module.exports.Room = Room

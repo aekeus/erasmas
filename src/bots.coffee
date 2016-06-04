@@ -1,7 +1,5 @@
 class JabberBot extends Character
 
-CORE.JabberBot = JabberBot
-
 class Dog extends Character
   constructor: () ->
     super
@@ -19,8 +17,6 @@ class Dog extends Character
       else
         ""
 
-CORE.Dog = Dog
-
 class Cat extends Character
   constructor: () ->
     super
@@ -29,4 +25,7 @@ class Cat extends Character
     if evt.contents.thing?.isa("Dog") and evt.type is "add"
       @goThrough utils.pickOne(@parent.childrenOfType("Door"))
 
-CORE.Cat  = Cat
+module.exports =
+  Cat: Cat
+  Dog: Dog
+  JabberBot: JabberBot

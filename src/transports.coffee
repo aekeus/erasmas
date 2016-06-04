@@ -62,6 +62,7 @@ class TicketDoor extends Door
     else
       return [false, "You will need to buy a ticket to this destination"]
 
-CORE.TicketAgent = TicketAgent
-CORE.Ticket      = Ticket
-CORE.TicketDoor  = TicketDoor
+module.exports =
+  TicketAgent: TicketAgent
+  Ticket: Ticket
+  TicketDoor: TicketDoor

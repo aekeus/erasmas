@@ -11,3 +11,5 @@ Event.validEvents =
   add:    1
   remove: 1
   talk:   1
+
+module.exports.Event = Event

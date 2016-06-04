@@ -27,3 +27,8 @@ class Zone extends Thing
     super
 
 CORE.Zone = Zone
+
+module.exports =
+  World: World
+  Zone: Zone
+

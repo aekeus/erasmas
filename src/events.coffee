@@ -5,3 +5,5 @@ EVENTS =
     description: "whispers to another thing"
   broadcasts:
     description: "thing sends events to many things in a room or globally"
+
+module.exports.EVENTS = EVENTS

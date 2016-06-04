@@ -1,7 +1,8 @@
-class Console
+class Connection
   constructor: (@socket) ->
+    conn = this
     return unless @socket
-    log "Console accepted from " + socket.remoteAddress
+    log "Connection accepted from " + socket.remoteAddress
     buffer = ""
 
     socket.addListener "data", (packet) ->
@@ -34,5 +35,22 @@ class Console
       catch error
         puts "Uncaught exception! " + error
 
+  parse: (text) ->
+    tokens = utils.parse text
+
+  quit: (text) ->
+    puts "QUIT: " + text
+
   send: (text) ->
     @socket.write(text + utils.eol + utils.prompt) if @socket?
+
+  connect: (character) ->
+    character.connect this
+    @character = character
+
+  disconnect: ->
+    @character.disconnect()
+    @character = null
+    @socket.end()
+
+module.exports.Connection = Connection
