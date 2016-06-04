@@ -1,16 +1,24 @@
 { registry } = require './registry'
 { utils } = require './utils'
+{ SearchThing } = require './search'
+{ Event } = require './event'
+
+_ = require 'underscore'
+
+assert = require 'assert'
 
 gid = 1000
 
 class Thing
-  constructor: (@name, @attributes, existingGid) ->
+  constructor: (@name, @attributes) ->
     # key / value pairs of attributes
     @attributes ||= {}
     @attributes.created_at ||= new Date().toString()
 
     # global Thing id
-    @gid = existingGid || gid += 1
+    gid = parseInt(gid, 10) + 1
+    @gid = gid
+    
     registry.register this
 
     # object (k/v) of children {Thing}
@@ -73,7 +81,7 @@ class Thing
     assert selector?, "selector required"
 
     args ||= {}
-    searchThing this, selector, args
+    SearchThing this, selector, args
 
   # can an attribute be set to a value? redefine in subclasses to provide access control
   canSetAttr: (k, v) ->

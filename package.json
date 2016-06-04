@@ -19,5 +19,8 @@
   "homepage": "https://github.com/aekeus/erasmas",
   "devDependencies": {
     "tap": "^5.7.2"
+  },
+  "dependencies": {
+    "underscore": "^1.8.3"
   }
 }

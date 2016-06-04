@@ -1,3 +1,5 @@
+{ utils } = require './utils'
+
 comp = name: {}, type: {}, gid: {}, attr: {}
 
 comp.name["isa"]    = (thing, value) -> throw "ISA not defined for name"
@@ -35,7 +37,7 @@ comp.attr["gte"]   = comp.attr[">="]  = (thing, attrName, value) -> thing.attr(a
 comp.attr["lt"]    = comp.attr["<"]   = (thing, attrName, value) -> thing.attr(attrName) <    value
 comp.attr["lte"]   = comp.attr["<="]  = (thing, attrName, value) -> thing.attr(attrName) <=   value
 
-searchThing = (thing, selectors, args={}) ->
+SearchThing = (thing, selectors, args={}) ->
   args.one  ?= false
   args.soft ?= false
 
@@ -90,4 +92,4 @@ searchThing = (thing, selectors, args={}) ->
   return results[0] if results? and args.one
   return results
 
-module.exports.searchThing = searchThing
+module.exports.SearchThing = SearchThing

@@ -1,3 +1,5 @@
+{ Thing } = require './thing'
+
 class CoffeeMaker extends Thing
   constructor: () ->
     super

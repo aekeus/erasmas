@@ -1,3 +1,8 @@
+{ Character } = require './character'
+{ Thing } = require './thing'
+{ Door } = require './door'
+
+{ registry } = require './registry'
 #
 #  TicketAgents are NPC that will sell a ticket that allows entry through a specific door
 #

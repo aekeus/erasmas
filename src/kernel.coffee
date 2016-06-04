@@ -3,6 +3,11 @@
 { Dispatcher } = require './dispatch'
 { World } = require './world'
 { utils } = require './utils'
+{ Character } = require '../dist/character'
+{ Door } = require '../dist/door'
+{ createable } = require '../dist/createable'
+
+assert = require 'assert'
 
 #
 #  The Kernel controls the cycle by cycle workings of the MUSH. It handles the tree update logic, sends and receives messages from
@@ -192,7 +197,8 @@ class Kernel
     assert selector, "logic_find - selector required"
 
     things = @world.search selector
-    return utils.notFoundMsg selector unless things?
+    
+    return utils.notFoundMsg selector unless things?.length
 
     ("#{thing} in #{thing.parent}" for thing in things).join(utils.eol)
 
@@ -215,7 +221,7 @@ class Kernel
     assert cls?, "cls required"
     name ?= cls
 
-    clsref = CORE[cls] || exports[cls]
+    clsref = createable[cls] || exports[cls]
     return "You cannot create a thing of type #{cls}" unless clsref
     thing = new clsref(name)
 
@@ -350,7 +356,7 @@ class Kernel
   #  selector - target selector {Selector}
   #
   logic_rm: (conn, selector) =>
-    mAssert conn.constructor.name is "Connection", selector?
+    utils.mAssert conn.constructor.name is "Connection", selector?
 
     thing = @world.search selector, one: true
     return "#{selector} could not be found" unless thing?
@@ -369,7 +375,7 @@ class Kernel
   #  name     - new name              {String}
   #
   logic_rename: (conn, selector, name) =>
-    mAssert conn.constructor.name is "Connection", selector?, name?
+    utils.mAssert conn.constructor.name is "Connection", selector?, name?
 
     thing = @world.search selector, one: true
 
@@ -385,8 +391,8 @@ class Kernel
   #  attribute - attribute name   {String}
   #  selector  - target selector  {String} [OPTIONAL]
   #
-  logic_append: (conn, value, attribute) =>
-    mAssert conn.constructor.name is "Connection", attribute?, value?
+  logic_append: (conn, value, attribute, selector) =>
+    utils.mAssert conn.constructor.name is "Connection", attribute?, value?
 
     if selector?
       thing = @world.search selector, one: true
@@ -408,7 +414,7 @@ class Kernel
   #  value     - string or special string {String}
   #
   logic_set: (conn, attribute, selector, value) =>
-    mAssert conn.constructor.name is "Connection", attribute?, value?, selector?
+    utils.mAssert conn.constructor.name is "Connection", attribute?, value?, selector?
 
     target = @world.search selector, one: true
     return utils.notFoundMsg selector unless target?
@@ -443,7 +449,7 @@ class Kernel
   #  selector2 - second room selector {selector}
   #
   logic_link: (conn, selector1, selector2) =>
-    mAssert conn.constructor.name is "Connection", selector1?
+    utils.mAssert conn.constructor.name is "Connection", selector1?
 
     room1 = @world.search selector1, one: true
     return utils.notFoundMsg selector1 unless room1?
@@ -557,7 +563,8 @@ class Kernel
     return "#{selector} not found" unless source?
 
     rep = source.rep()
-    clone = new CORE[rep.type](name, utils.clone(rep.attributes), null)
+    return "#{rep.type} not createable" unless createable[rep.type]
+    clone = new createable[rep.type](name, utils.clone(rep.attributes), null)
     clone.attributes.created_at = new Date().toString()
     clone.attributes.created_by = conn.character.gid
 

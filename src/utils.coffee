@@ -100,5 +100,9 @@ utils =
             utils.trimQuotes v
         else
           v
+          
+  mAssert: ->
+    for arg in arguments
+      throw "assert failed" unless arg
 
 module.exports.utils = utils
