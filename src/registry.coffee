@@ -15,4 +15,4 @@ class Registry
     gid = parseInt gid, 10
     @things[gid]
 
-registry = new Registry
+module.exports.registry = new Registry

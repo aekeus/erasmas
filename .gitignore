@@ -1,6 +1,4 @@
-mush.test.coffee
-mush.js
-mush.coffee
 *.*~
 *~
 dist
+node_modules

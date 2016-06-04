@@ -4,7 +4,8 @@
   "description": "Erasmas is a text based shared multi user environment. (MUD, MUSH etc...)",
   "main": "index.js",
   "scripts": {
-    "build": "coffee -o dist -c src/"
+    "build": "coffee -o dist -b -c src/",
+    "test": "npm build && tap test/"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/aekeus/erasmas/issues"
   },
-  "homepage": "https://github.com/aekeus/erasmas"
+  "homepage": "https://github.com/aekeus/erasmas",
+  "devDependencies": {
+    "tap": "^5.7.2"
+  }
 }

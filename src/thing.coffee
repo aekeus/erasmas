@@ -1,3 +1,5 @@
+{ registry } = require './registry'
+
 class Thing
   constructor: (@name, @attributes, existingGid) ->
     # key / value pairs of attributes
@@ -5,7 +7,7 @@ class Thing
     @attributes.created_at ||= new Date().toString()
 
     # global Thing id
-    @gid = existingGid || gid += 1
+    @gid = existingGid += 1
     registry.register this
 
     # object (k/v) of children {Thing}

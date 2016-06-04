@@ -1,3 +1,5 @@
+{ Thing } = require './thing'
+
 # a World contains Zones
 class World extends Thing
   constructor: ->
@@ -19,14 +21,10 @@ class World extends Thing
 
     recurseThingRep this
 
-CORE.World = World
-
 # Zone is a parent container for Rooms
 class Zone extends Thing
   constructor: ->
     super
-
-CORE.Zone = Zone
 
 module.exports =
   World: World
