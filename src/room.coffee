@@ -1,3 +1,6 @@
+{ Thing } = require './thing'
+{ Event } = require './event'
+
 class Room extends Thing
   constructor: () ->
     super

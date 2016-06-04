@@ -1,3 +1,5 @@
+{ Thing } = require './thing'
+
 class Door extends Thing
   constructor: ->
     super
