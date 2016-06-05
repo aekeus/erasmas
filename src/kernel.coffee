@@ -13,6 +13,8 @@ assert = require 'assert'
 fs = require 'fs'
 debug = console.log
 
+logic = (cmd) => require "./logic/#{cmd}"
+
 #
 #  The Kernel controls the cycle by cycle workings of the MUSH. It handles the tree update logic, sends and receives messages from
 #  connection sockets and is responsible for loading and saving world files.
@@ -31,46 +33,46 @@ class Kernel
   #  dispatcher - Object responsible for installation and matching of commands {Dispatcher}
   #
   setupDispatcher: (dispatcher) ->
-    dispatcher.install @logic_save,          "save world to named file",                           "save",     "ALPHANUM"
-    dispatcher.install @logic_save,          "save world to default filename",                     "save"
-    dispatcher.install @logic_create_character, "create a new character",                          "create", "character", "ALPHANUM", "with", "password", "ALPHANUM"
-    dispatcher.install @logic_set,           "set an attribute of a thing to a value",             "set",      "ALPHANUM", "of", "ID", "to", "ALPHANUM"
-    dispatcher.install @logic_implicit_set,  "set an attribute of the current thing to a value",   "set",      "ALPHANUM", "to", "ALPHANUM"
-    dispatcher.install @logic_append,        "append a value to a list attribute of a thing",      "append",   "ALPHANUM", "to", "ALPHANUM", "of", "ID"
-    dispatcher.install @logic_append,        "append a value to a list in the current thing",      "append",   "ALPHANUM", "to", "ALPHANUM"
+    dispatcher.install @logic_save,               "save world to named file",                           "save",     "ALPHANUM"
+    dispatcher.install @logic_save,               "save world to default filename",                     "save"
+    dispatcher.install @logic_create_character,   "create a new character",                             "create", "character", "ALPHANUM", "with", "password", "ALPHANUM"
+    dispatcher.install @logic_set,                "set an attribute of a thing to a value",             "set",      "ALPHANUM", "of", "ID", "to", "ALPHANUM"
+    dispatcher.install @logic_implicit_set,       "set an attribute of the current thing to a value",   "set",      "ALPHANUM", "to", "ALPHANUM"
+    dispatcher.install @logic_append,             "append a value to a list attribute of a thing",      "append",   "ALPHANUM", "to", "ALPHANUM", "of", "ID"
+    dispatcher.install @logic_append,             "append a value to a list in the current thing",      "append",   "ALPHANUM", "to", "ALPHANUM"
     for verb in ["inv", "inventory"]
-      dispatcher.install @logic_inventory,   "display inventory",                                  verb
-    dispatcher.install @logic_link,          "link two rooms via two doors",                       "link",     "ID", "to", "ID"
-    dispatcher.install @logic_link,          "link room to current room",                          "link",     "ID"
-    dispatcher.install @logic_move,          "move a thing to a new parent",                       "move",     "ID", "to", "ID"
-    dispatcher.install @logic_take,          "take a thing",                                       "take",     "ID"
-    dispatcher.install @logic_put,           "put a thing in another thing",                       "put",      "ID", "(?:in|on)", "ID"
-    dispatcher.install @logic_give,          "give a thing to another character",                  "give",     "ID", "to", "ID"
-    dispatcher.install @logic_drop,          "drop a thing",                                       "drop",     "ID"
-    dispatcher.install @logic_find,          "find a thing",                                       "find",     "ALPHANUM"
+      dispatcher.install @logic_inventory,        "display inventory",                                  verb
+    dispatcher.install @logic_link,               "link two rooms via two doors",                       "link",     "ID", "to", "ID"
+    dispatcher.install @logic_link,               "link room to current room",                          "link",     "ID"
+    dispatcher.install @logic_move,               "move a thing to a new parent",                       "move",     "ID", "to", "ID"
+    dispatcher.install @logic_take,               "take a thing",                                       "take",     "ID"
+    dispatcher.install @logic_put,                "put a thing in another thing",                       "put",      "ID", "(?:in|on)", "ID"
+    dispatcher.install @logic_give,               "give a thing to another character",                  "give",     "ID", "to", "ID"
+    dispatcher.install @logic_drop,               "drop a thing",                                       "drop",     "ID"
+    dispatcher.install @logic_find,               "find a thing",                                       "find",     "ALPHANUM"
     for verb in ["rm", "del", "delete", "remove"]
-      dispatcher.install @logic_rm,          "remove a thing",                                     verb,       "ID"
-    dispatcher.install @logic_create_door,   "create a door to a room",                            "create",   "door", "ALPHANUM", "to", "ID"
-    dispatcher.install @logic_create_room,   "create a named room",                                "create",   "room", "ALPHANUM"
-    dispatcher.install @logic_create_linked_room, "create a named room and link to current room",  "create",   "linked", "room", "ALPHANUM"
-    dispatcher.install @logic_create_thing,  "create a named thing",                               "create",   "thing", "ALPHANUM"
-    dispatcher.install @logic_create_custom, "create a custom named thing",                        "create",   "CLS", "ALPHANUM"
-    dispatcher.install @logic_create_custom, "create a custom thing",                              "create",   "CLS"
-    dispatcher.install @logic_create_thing,  "create a thing",                                     "create",   "thing"
-    dispatcher.install @logic_copy,          "make a copy of a thing",                             "copy",     "ALPHANUM", "as", "ALPHANUM"
-    dispatcher.install @logic_look_at,       "look at a thing",                                    "look",     "at", "ID"
-    dispatcher.install @logic_look_at,       "look at a thing",                                    "look",     "ID"
-    dispatcher.install @logic_look,          "look at current room",                               "look"
-    dispatcher.install @logic_inspect,       "inspect a thing's attributes, children and actions", "inspect",  "ID"
-    dispatcher.install @logic_go,            "go through a door",                                  "go",       "ID"
-    dispatcher.install @logic_rename,        "rename a thing",                                     "rename",   "ID", "to", "ALPHANUM"
-    dispatcher.install @logic_login,         "login with username and password",                   "login",    "ALPHANUM", "ALPHANUM"
-    dispatcher.install @logic_logout,        "logout of system",                                   "logout"
-    dispatcher.install @logic_say,           "speak to everyone in a room",                        "say",      "ALPHANUM"
-    dispatcher.install @logic_modify,        "set the current object to be modified",              "modify",   "ID"
-    dispatcher.install @logic_commands,      "show a list of commands",                            "commands"
-    dispatcher.install @logic_help,          "show help contents",                                 "help"
-#    dispatcher.install @logic_go,            "go through a door",                                  "ALPHANUM"
+      dispatcher.install @logic_rm,               "remove a thing",                                     verb,       "ID"
+    dispatcher.install @logic_create_door,        "create a door to a room",                            "create",   "door", "ALPHANUM", "to", "ID"
+    dispatcher.install @logic_create_room,        "create a named room",                                "create",   "room", "ALPHANUM"
+    dispatcher.install @logic_create_linked_room, "create a named room and link to current room",       "create",   "linked", "room", "ALPHANUM"
+    dispatcher.install @logic_create_thing,       "create a named thing",                               "create",   "thing", "ALPHANUM"
+    dispatcher.install @logic_create_custom,      "create a custom named thing",                        "create",   "CLS", "ALPHANUM"
+    dispatcher.install @logic_create_custom,      "create a custom thing",                              "create",   "CLS"
+    dispatcher.install @logic_create_thing,       "create a thing",                                     "create",   "thing"
+    dispatcher.install @logic_copy,               "make a copy of a thing",                             "copy",     "ALPHANUM", "as", "ALPHANUM"
+    dispatcher.install @logic_look_at,            "look at a thing",                                    "look",     "at", "ID"
+    dispatcher.install @logic_look_at,            "look at a thing",                                    "look",     "ID"
+    dispatcher.install @logic_look,               "look at current room",                               "look"
+    dispatcher.install @logic_inspect,            "inspect a thing's attributes, children and actions", "inspect",  "ID"
+    dispatcher.install @logic_go,                 "go through a door",                                  "go",       "ID"
+    dispatcher.install @logic_rename,             "rename a thing",                                     "rename",   "ID", "to", "ALPHANUM"
+    dispatcher.install @logic_login,              "login with username and password",                   "login",    "ALPHANUM", "ALPHANUM"
+    dispatcher.install @logic_logout,             "logout of system",                                   "logout"
+    dispatcher.install logic('say'),              "speak to everyone in a room",                        "say",      "ALPHANUM"
+    dispatcher.install @logic_modify,             "set the current object to be modified",              "modify",   "ID"
+    dispatcher.install @logic_commands,           "show a list of commands",                            "commands"
+    dispatcher.install @logic_help,               "show help contents",                                 "help"
+#    dispatcher.install @logic_go,                 "go through a door",                                  "ALPHANUM"
 
   #
   #  Start the server listening for connections
@@ -125,15 +127,6 @@ class Kernel
     @loadWorld filename, () =>
       @send conn, "World loaded from \"#{filename}\""
     "Loading"
-
-  #
-  #  Instruct the current character to say some words to others in the same room
-  #
-  #  words - words to speak {String}
-  #
-  logic_say: (conn, words) =>
-    conn.character.speak words
-    "You say #{words}"
 
   #
   #  Display list of commands and their descriptions

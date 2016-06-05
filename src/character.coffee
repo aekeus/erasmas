@@ -5,6 +5,7 @@
 { registry } = require './registry'
 
 assert = require 'assert'
+debug = console.log
 
 #
 #  Represents a Thing that can be connected to an input/output socket, can receive and send messages and interact
@@ -29,6 +30,8 @@ class Character extends Thing
     room.remove this
 
   goThrough: (door) ->
+    # sometimes we get a null here, lets trap for it
+    return '' unless door?
     assert door.isa("Door"), "door must be a Door"
 
     return "That door does not exist. You can go " + utils.textForThings(this.siblingsOfType("Door")) unless door?.isa("Door")
