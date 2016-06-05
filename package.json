@@ -1,0 +1,27 @@
+{
+  "name": "erasmas",
+  "version": "0.0.1",
+  "description": "Erasmas is a text based shared multi user environment. (MUD, MUSH etc...)",
+  "main": "index.js",
+  "scripts": {
+    "build": "coffee -o dist -b -c src/",
+    "test": "npm build && tap test/",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aekeus/erasmas.git"
+  },
+  "author": "Aubrey Keus",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aekeus/erasmas/issues"
+  },
+  "homepage": "https://github.com/aekeus/erasmas",
+  "devDependencies": {
+    "tap": "^5.7.2"
+  },
+  "dependencies": {
+    "underscore": "^1.8.3"
+  }
+}
