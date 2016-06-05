@@ -1,4 +1,5 @@
 { Thing } = require './thing'
+{ createable } = require './createable'
 
 class Door extends Thing
   constructor: ->
@@ -51,8 +52,11 @@ class DoorKey extends Thing
   isContainer: ->
     false
 
-module.exports =
+inter =
   Door: Door
   LockingDoor: LockingDoor
   DoorKey: DoorKey
 
+createable.addObject inter
+
+module.exports = inter

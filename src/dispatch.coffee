@@ -76,7 +76,7 @@ class Dispatcher
 
     for spec in @cmds
       cmd = spec[3].join(" ")
-      maxCommand     = cmd.length if cmd.length > maxCommand
+      maxCommand = cmd.length if cmd.length > maxCommand
       maxDescription = spec[2].length if spec[2].length > maxDescription
 
     for spec in @cmds

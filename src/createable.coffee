@@ -1,5 +1,3 @@
-{ Paper } = require '../dist/playthings'
-
 class Createable
   constructor: ->
     @mappings = {}
@@ -7,10 +5,13 @@ class Createable
   add: (type, func) ->
     @mappings[type] = func
 
-  byType: (tyoe) ->
+  addObject: (obj) ->
+    for k, v of obj
+      @add k, v
+
+  byType: (type) ->
     @mappings[type]
 
 createable = new Createable()
-createable.add 'Paper', Paper
 
 module.exports.createable = new Createable()

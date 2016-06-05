@@ -1,6 +1,10 @@
 { Thing } = require './thing'
 { utils } = require './utils'
 { Event } = require './event'
+{ createable } = require './createable'
+{ registry } = require './registry'
+
+assert = require 'assert'
 
 #
 #  Represents a Thing that can be connected to an input/output socket, can receive and send messages and interact
@@ -102,7 +106,11 @@ class NPC extends Character
   constructor: () ->
     super
 
-module.exports =
+inter =
   PlayerCharacter: PlayerCharacter
   Character: Character
   NPC: NPC
+
+createable.addObject inter
+
+module.exports = inter

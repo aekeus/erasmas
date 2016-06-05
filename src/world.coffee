@@ -1,3 +1,4 @@
+{ createable } = require './createable'
 { Thing } = require './thing'
 
 # a World contains Zones
@@ -26,7 +27,10 @@ class Zone extends Thing
   constructor: ->
     super
 
-module.exports =
+inter =
   World: World
   Zone: Zone
 
+createable.addObject inter
+
+module.exports = inter

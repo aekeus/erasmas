@@ -1,8 +1,9 @@
 { Character } = require './character'
 { Thing } = require './thing'
 { Door } = require './door'
-
 { registry } = require './registry'
+{ createable } = require './createable'
+
 #
 #  TicketAgents are NPC that will sell a ticket that allows entry through a specific door
 #
@@ -67,7 +68,11 @@ class TicketDoor extends Door
     else
       return [false, "You will need to buy a ticket to this destination"]
 
-module.exports =
+inter =
   TicketAgent: TicketAgent
   Ticket: Ticket
   TicketDoor: TicketDoor
+
+createable.addObject inter
+
+module.exports = inter

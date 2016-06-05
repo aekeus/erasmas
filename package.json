@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "coffee -o dist -b -c src/",
-    "test": "npm build && tap test/"
+    "test": "npm build && tap test/",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",

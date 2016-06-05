@@ -1,3 +1,6 @@
+{ Thing } = require './thing'
+{ createable } = require './createable'
+
 class Window extends Thing
   constructor: () ->
     super
@@ -6,5 +9,10 @@ class Window extends Thing
     destination = registry.get(+@attributes.destination)
     "You see into #{destination.name}"
 
-module.exports.Window = Window
+inter =
+  Window: Window
+
+createable.addObject inter
+  
+module.exports = inter
 

@@ -1,12 +1,16 @@
+puts = console.log
+{ utils } = require './utils'
+{ kernel } = require './kernel'
+
 class Connection
-  constructor: (@socket) ->
+  constructor: (@socket, kernel) ->
     conn = this
     return unless @socket
-    log "Connection accepted from " + socket.remoteAddress
+    console.log "Connection accepted from " + @socket.remoteAddress
     buffer = ""
 
-    socket.addListener "data", (packet) ->
-      try
+    @socket.addListener "data", (packet) ->
+#      try
         buffer += packet
         i = buffer.indexOf("\r\n")
         while i isnt -1
@@ -20,16 +24,16 @@ class Connection
             kernel.handleInput conn, tokens, "#{message}"
           buffer = buffer.slice i + 2
           i = buffer.indexOf("\r\n")
-      catch error
-        puts "Uncaught exception! " + error
+#      catch error
+#        puts "Uncaught exception! " + error
 
-    socket.addListener "eof", (packet) ->
+    @socket.addListener "eof", (packet) ->
       try
         conn.quit("connection reset by peer")
       catch error
         puts "Uncaught exception! " + error
 
-    socket.addListener "timeout", (packet) ->
+    @socket.addListener "timeout", (packet) ->
       try
         conn.quit("idle timeout")
       catch error

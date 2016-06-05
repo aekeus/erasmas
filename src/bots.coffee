@@ -1,3 +1,8 @@
+{ createable } = require './createable'
+{ Character } = require './character'
+{ Event } = require './event'
+{ utils } = require './utils'
+
 class JabberBot extends Character
 
 class Dog extends Character
@@ -25,7 +30,11 @@ class Cat extends Character
     if evt.contents.thing?.isa("Dog") and evt.type is "add"
       @goThrough utils.pickOne(@parent.childrenOfType("Door"))
 
-module.exports =
+inter =
   Cat: Cat
   Dog: Dog
   JabberBot: JabberBot
+
+createable.addObject inter
+
+module.exports = inter

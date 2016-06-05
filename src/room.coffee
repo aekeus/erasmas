@@ -1,5 +1,6 @@
 { Thing } = require './thing'
 { Event } = require './event'
+{ createable } = require './createable'
 
 class Room extends Thing
   constructor: () ->
@@ -23,4 +24,9 @@ class Room extends Thing
 
   hear: (evt) -> @broadcast evt
 
-module.exports.Room = Room
+inter =
+  Room: Room
+
+createable.addObject inter
+
+module.exports = inter

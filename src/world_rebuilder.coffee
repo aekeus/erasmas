@@ -1,9 +1,21 @@
+{ createable } = require './createable'
+require './room'
+require './playthings'
+require './common_objects'
+require './thing'
+require './maze'
+require './transports'
+require './containers'
+require './bots'
+
 class WorldRebuilder
   constructor: (@json) ->
 
   build: ->
     builder = (node) ->
-      obj = new CORE[node.type](node.name, node.attributes, node.gid)
+      creater = createable.byType(node.type)
+      throw "#{node.type} not createable" unless creater?
+      obj = new creater(node.name, node.attributes, node.gid)
       if node.children
         for gid, childNode of node.children
           obj.add(builder(childNode))
@@ -11,5 +23,5 @@ class WorldRebuilder
 
     builder @json
 
-modules.exports =
+module.exports =
   WorldRebuilder: WorldRebuilder

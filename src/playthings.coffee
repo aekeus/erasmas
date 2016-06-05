@@ -1,4 +1,5 @@
 { Thing } = require './thing'
+{ createable } = require './createable'
 
 class CoffeeMaker extends Thing
   constructor: () ->
@@ -78,9 +79,12 @@ class Paper extends Thing
     "write-on": 1
     "read": 1
 
-module.exports =
+inter =
   CoffeeMaker: CoffeeMaker
   CupOfCoffee: CupOfCoffee
   Clock: Clock
   OnOff: OnOff
   Paper: Paper
+
+createable.addObject inter
+module.exports = inter

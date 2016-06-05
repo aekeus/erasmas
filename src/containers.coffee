@@ -1,3 +1,6 @@
+{ createable } = require './createable'
+{ Thing } = require './thing'
+
 class PersonalContainer extends Thing
   constructor: (@capacity) ->
     super
@@ -10,7 +13,11 @@ class SmallBag extends Thing
   constructor: () ->
     super
 
-module.exports =
+inter =
   PersonalContainer: PersonalContainer
   Backpack: Backpack
   SmallBag: SmallBag
+
+createable.addObject inter
+
+module.exports = inter

@@ -2,22 +2,26 @@
 { utils } = require './utils'
 { SearchThing } = require './search'
 { Event } = require './event'
+{ createable } = require './createable'
 
 _ = require 'underscore'
 
 assert = require 'assert'
 
-gid = 1000
+gGid = 1000
 
 class Thing
-  constructor: (@name, @attributes) ->
+  constructor: (@name, @attributes, existingGid) ->
     # key / value pairs of attributes
     @attributes ||= {}
     @attributes.created_at ||= new Date().toString()
 
     # global Thing id
-    gid = parseInt(gid, 10) + 1
-    @gid = gid
+    if existingGid
+      @gid = parseInt(existingGid, 10)
+    else
+      @gid = gGid + 1
+    gGid = @gid
     
     registry.register this
 
@@ -254,4 +258,9 @@ class Thing
 
   interface: -> {}
 
-module.exports.Thing = Thing
+inter =
+  Thing: Thing
+
+createable.addObject inter
+
+module.exports = inter

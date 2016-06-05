@@ -2,12 +2,15 @@
 { Registry } = require './registry'
 { Dispatcher } = require './dispatch'
 { World } = require './world'
+{ WorldRebuilder } = require './world_rebuilder'
 { utils } = require './utils'
 { Character } = require '../dist/character'
 { Door } = require '../dist/door'
 { createable } = require '../dist/createable'
 
 assert = require 'assert'
+fs = require 'fs'
+debug = console.log
 
 #
 #  The Kernel controls the cycle by cycle workings of the MUSH. It handles the tree update logic, sends and receives messages from
@@ -15,7 +18,7 @@ assert = require 'assert'
 #
 class Kernel
   constructor: (@port = 8000) ->
-    @server       = new Server @port, this.connectionHandler
+    @server       = new Server @port, 2, this
     @registry     = Registry
     @world        = new World "DefaultWorld"
     @dispatcher   = new Dispatcher
@@ -337,8 +340,13 @@ class Kernel
     door = conn.character.parent.search(selector + "[Door]", one: true) || @softMatchIn(selector, conn.character.parent.childrenOfType "Door")
     return false unless door?
 
+    console.log door
+    console.log door.destination()
+
     destinationRoom = @world.search door.destination(), one: true
     return "Destination room not found." unless destinationRoom?
+
+    console.log destinationRoom
 
     [ok, reason] = door.canTraverse(conn.character)
     #debug "ok = #{ok}"

@@ -1,3 +1,6 @@
+{ createable } = require './createable'
+{ Thing } = require './thing'
+
 #
 # Direct conversion from code at http://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking
 #
@@ -120,4 +123,9 @@ class MazeBuilder extends Thing
     start:     1
     construct: 1
 
-module.exports.MazeBuilder = MazeBuilder
+inter =
+  MazeBuilder: MazeBuilder
+
+createable.addObject inter
+
+module.exports = inter
