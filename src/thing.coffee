@@ -19,10 +19,11 @@ class Thing
     # global Thing id
     if existingGid
       @gid = parseInt(existingGid, 10)
+      gGid = @gid if @gid >= gGid
     else
       @gid = gGid + 1
-    gGid = @gid
-    
+      gGid = @gid
+
     registry.register this
 
     # object (k/v) of children {Thing}

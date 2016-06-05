@@ -7,6 +7,7 @@
 { Character } = require '../dist/character'
 { Door } = require '../dist/door'
 { createable } = require '../dist/createable'
+{ Room } = require '../dist/room'
 
 assert = require 'assert'
 fs = require 'fs'
