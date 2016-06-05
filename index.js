@@ -1,6 +1,17 @@
+var fs = require('fs')
+var path = require('path')
 var kernel = require('./dist/kernel')
 
-var s = new kernel.Kernel(9002)
-s.loadWorld('./misc/world.json.archive', function() {
-  s.start()
+var configFilename =  'development.config.json'
+if (process.env.PROD) {
+  configFilename = 'production.config.json'
+}
+
+var config = JSON.parse(fs.readFileSync(path.join('config', configFilename), 'utf-8'))
+
+var worldFilename = path.join('misc', config.world)
+
+var k = new kernel.Kernel(config.port)
+k.loadWorld(worldFilename, function() {
+  k.start()
 })

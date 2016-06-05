@@ -340,17 +340,10 @@ class Kernel
     door = conn.character.parent.search(selector + "[Door]", one: true) || @softMatchIn(selector, conn.character.parent.childrenOfType "Door")
     return false unless door?
 
-    console.log door
-    console.log door.destination()
-
     destinationRoom = @world.search door.destination(), one: true
     return "Destination room not found." unless destinationRoom?
 
-    console.log destinationRoom
-
     [ok, reason] = door.canTraverse(conn.character)
-    #debug "ok = #{ok}"
-    #debug "reason = #{reason}"
     unless ok
       return "You cannot go to the #{destinationRoom.mqname()} in #{destinationRoom.closestOfType('Zone')?.mqname()}. #{reason}."
 
