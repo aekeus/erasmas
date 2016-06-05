@@ -1,5 +1,6 @@
 { Thing } = require './thing'
 { createable } = require './createable'
+{ Event } = require './event'
 
 class CoffeeMaker extends Thing
   constructor: () ->
@@ -71,6 +72,7 @@ class Paper extends Thing
 
   "write-on": (character, text) ->
     @attributes.contents.push text
+    "Wrote #{text}"
 
   read: (character) ->
     @attributes.contents.join("\r\n")

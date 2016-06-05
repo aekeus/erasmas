@@ -218,7 +218,7 @@ class Kernel
     assert cls?, "cls required"
     name ?= cls
 
-    clsref = createable[cls] || exports[cls]
+    clsref = createable.byType(cls)
     return "You cannot create a thing of type #{cls}" unless clsref
     thing = new clsref(name)
 

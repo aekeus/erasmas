@@ -60,9 +60,6 @@ testKernelLogic1 = ->
   response = k.logic_link conn, "Room 1", "Some New Name"
   tap.ok response.match(/linked/), "link created"
 
-  response = k.logic_say conn, "hello"
-  tap.ok response.match(/you say/i), "say"
-
   response = k.logic_commands conn
   tap.ok response.split(/\r\n/).length > 5, "commands"
 
