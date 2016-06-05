@@ -12,20 +12,31 @@
 assert = require 'assert'
 fs = require 'fs'
 debug = console.log
+path = require 'path'
+tmp = require 'tmp'
 
 logic = (cmd) => require "./logic/#{cmd}"
 
+DEFAULT_PORT = 8000
 #
 #  The Kernel controls the cycle by cycle workings of the MUSH. It handles the tree update logic, sends and receives messages from
 #  connection sockets and is responsible for loading and saving world files.
 #
 class Kernel
-  constructor: (@port = 8000) ->
-    @server       = new Server @port, 2, this
+  constructor: (@config={}) ->
+    @server       = new Server @config.port or DEFAULT_PORT, 2, this
     @registry     = Registry
     @world        = new World "DefaultWorld"
     @dispatcher   = new Dispatcher
     @setupDispatcher @dispatcher
+
+    # setup autosave
+    if @config?.autosave?.enabled
+      setInterval =>
+        filename = path.join(@config.autosave.location, @config.world)
+        @saveWorld filename, ->
+          console.log "autosave of #{filename} complete"
+      , @config.autosave.frequency
 
   #
   #  Install logic handler for text commands
@@ -680,11 +691,13 @@ class Kernel
   #  filename - name of file to save            {String}
   #  doneCB   - callback function when complete {Function}
   #
-  saveWorld: (filename="world.json", doneCB) ->
+  saveWorld: (filename, doneCB) ->
     debug "saving filename as #{filename}"
-    fs.writeFile filename, JSON.stringify(@world.fullRep()), (err) ->
-      throw err if err
-      doneCB()
+    tmpobj = tmp.fileSync()
+    fs.writeFile tmpobj.name, JSON.stringify(@world.fullRep()), (err) ->
+      fs.rename tmpobj.name, filename, (renameERr) ->
+        throw err if err
+        doneCB()
 
   #
   #  Load the current world from a JSON document
@@ -693,6 +706,7 @@ class Kernel
   #  doneCB   - callback function when complete {Function}
   #
   loadWorld: (filename, doneCB) ->
+    console.log "loading world from #{filename}"
     fs.readFile filename, (err, contents) =>
       throw err if err
       data = JSON.parse(contents)

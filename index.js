@@ -9,9 +9,12 @@ if (process.env.PROD) {
 
 var config = JSON.parse(fs.readFileSync(path.join('config', configFilename), 'utf-8'))
 
-var worldFilename = path.join('misc', process.env.WORLD || config.world)
+var worldFilename = path.join(
+		process.env.LOCATION || config.autosave.location,
+		process.env.WORLD || config.world
+)
 
-var k = new kernel.Kernel(config.port)
+var k = new kernel.Kernel(config)
 k.loadWorld(worldFilename, function() {
   k.start()
 })

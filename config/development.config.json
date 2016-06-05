@@ -1,4 +1,9 @@
 {
-  "port": 9002,
-  "world": "world.json.archive"
+		"port": 9002,
+		"world": "world.json.archive",
+		"autosave": {
+				"enabled": true,
+				"frequency": 60000,
+				"location": "data"
+		}
 }
